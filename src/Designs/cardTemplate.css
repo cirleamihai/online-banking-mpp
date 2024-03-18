@@ -1,0 +1,109 @@
+.card-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+}
+
+.myCreditCard {
+    background-color: #23406f;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    color: white;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.myCreditCard-add {
+    max-width: 650px;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-icon {
+    width: 20px;
+}
+
+.card-logo {
+    width: 40px;
+}
+
+.card-number-input,
+.card-holder input,
+.card-expiry input,
+
+.card-cvv input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    color: white;
+    font-size: 1rem;
+}
+
+.card-type input {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    color: white;
+    font-size: 1rem;
+}
+
+.card-number-input::placeholder,
+.card-holder input::placeholder,
+.card-expiry input::placeholder,
+.card-type input::placeholder,
+.card-cvv input::placeholder {
+    color: white;
+}
+
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.card-info {
+    flex: 1;
+}
+
+.card-cvv {
+    width: 20%;
+}
+
+.submit-btn {
+    width: 50%;
+    text-align: center;
+    padding: 0.8rem;
+    margin-top: 1.5rem;
+    background-color: #00acee;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #007bbf;
+}
+
+.light {
+    color: #7d7979;
+    font-size: 0.75rem;
+}
+
+.write {
+    color: white;
+    font-size: 0.75rem;
+}
+
+/* Add any additional styles for breakpoints/responsiveness or interactive states */
