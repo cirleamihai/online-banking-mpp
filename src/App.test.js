@@ -51,11 +51,10 @@ describe('WholeAPPTests', () => {
     test('HomePage Test', () => {
         render(<App/>);
         const linkElement = screen.getByText(/Add Card/i);
-        const checkCardExistence = screen.getByText(/TestCard/i);
+        const checkCardExistence = screen.getByText(/Alex Testing/i);
         const checkCardExistence2 = screen.getByText(/1111/i);
-        const checkCardExistence4 = screen.getByText(/TestCard/i);
         const checkCardExistence5 = screen.getByText(/8116/i);
-        const checkHeader = screen.getByText(/CardName/i);
+        const checkHeader = screen.getByText(/CardHolder/i);
         const checkHeader2 = screen.getByText(/LastDigits/i);
         const checkHeader3 = screen.getByText(/CardType/i);
         const checkHeader4 = screen.getAllByText(/Edit/i);
@@ -64,7 +63,6 @@ describe('WholeAPPTests', () => {
         expect(linkElement).toBeInTheDocument();
         expect(checkCardExistence).toBeInTheDocument();
         expect(checkCardExistence2).toBeInTheDocument();
-        expect(checkCardExistence4).toBeInTheDocument();
         expect(checkCardExistence5).toBeInTheDocument();
         expect(checkHeader).toBeInTheDocument();
         expect(checkHeader2).toBeInTheDocument();
