@@ -1,0 +1,23 @@
+.cards-table-color {
+    color: #ffffff
+}
+
+.custom-table-hover tbody tr:hover {
+    background-color: #121221;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.pagination-container .page-item {
+    height: 38px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-container .dropdown-toggle {
+    height: 38px; /* Adjust to match pagination items */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
