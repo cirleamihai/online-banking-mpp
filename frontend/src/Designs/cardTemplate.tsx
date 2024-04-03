@@ -10,14 +10,14 @@ export const viewCard = (card: CreditCard) => {
         <div className="myCreditCard p-2 px-3 py-3">
             <div className="d-flex justify-content-between align-items-center"><img
                 src="https://i.imgur.com/8ANWXql.png" alt="Check" width="20" height="20"/><img alt="Provider" src={
-                card.cardType === "Visa" ? visaLogo : masterCardLogo} width="40"/></div>
-            <div className="mt-3"><span className="mr-3">{card.cardNumber.slice(0, 4)}</span><span
-                className="mr-3">{card.cardNumber.slice(5, 9)}</span><span
-                className="mr-3">{card.cardNumber.slice(10, 14)}</span><span
-                className="mr-2">{card.cardNumber.slice(15, 19)}</span></div>
+                card.type === "Visa" ? visaLogo : masterCardLogo} width="40"/></div>
+            <div className="mt-3"><span className="mr-3">{card.number.slice(0, 4)}</span><span
+                className="mr-3">{card.number.slice(5, 9)}</span><span
+                className="mr-3">{card.number.slice(10, 14)}</span><span
+                className="mr-2">{card.number.slice(15, 19)}</span></div>
             <div className="d-flex justify-content-between card-details mt-3 mb-3">
                 <div className="d-flex flex-column"><span
-                    className="light">Card Holder</span><span>{card.cardPlaceHolder}</span>
+                    className="light">Card Holder</span><span>{card.placeHolder}</span>
                 </div>
                 <div className="d-flex flex-row">
                     <div className="d-flex flex-column mr-3"><span className="light">Expired</span><span>{
@@ -42,25 +42,25 @@ export const NewCardForm = (card: CreditCard, handleSubmit, ...setters) => {
                 <div className="card-top">
                     <img src="https://i.imgur.com/8ANWXql.png" alt="Card Icon" className="card-icon"/>
                     {card ?
-                        <img src={card.cardType === "Visa" ? visaLogo : masterCardLogo} alt="Card Logo"
+                        <img src={card.type === "Visa" ? visaLogo : masterCardLogo} alt="Card Logo"
                              className="card-logo"/> :
                         <div className="card-type">
                             <input id="cardType" type="text"
                                    onChange={e => setCardType(e.target.value ? e.target.value : e.target.placeholder)}
-                                   placeholder={card ? card.cardType : "Visa"}/>
+                                   placeholder={card ? card.type : "Visa"}/>
                         </div>
                     }
                 </div>
                 <input type="text" className="card-number-input" id="cardNumber"
                        onChange={e => setCardNumber(e.target.value ? e.target.value : e.target.placeholder)}
-                       placeholder={card ? card.cardNumber : "1111 2222 3333 4444"}/>
+                       placeholder={card ? card.number : "1111 2222 3333 4444"}/>
                 <div className="card-bottom">
                     <div className="">
                         <div className="card-holder">
                             <label htmlFor="cardHolder" className="light">Card Holder</label>
                             <input id="cardHolder" type="text"
                                    onChange={e => setCardHolder(e.target.value ? e.target.value : e.target.placeholder)}
-                                   placeholder={card ? card.cardPlaceHolder : "Sam Dingo"}/>
+                                   placeholder={card ? card.placeHolder : "Sam Dingo"}/>
                         </div>
                         <div className="card-expiry">
                             <label htmlFor="expiry" className="light">Expires</label>

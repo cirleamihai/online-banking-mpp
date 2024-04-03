@@ -1,19 +1,19 @@
 export default class CreditCard {
-    objectId: string;
-    cardTitle: string;
-    cardType: string;
-    cardNumber: string;
-    cardPlaceHolder: string;
+    id: string;
+    title: string;
+    type: string;
+    number: string;
+    placeHolder: string;
     expiryMo: number;
     expiryYr: number;
     cvv: string;
 
     constructor(card) {
-        card ? this.objectId = card.id: this.objectId = '';
-        card ? this.cardTitle = card.title : this.cardTitle = '';
-        card ? this.cardType = card.type : this.cardType = '';
-        card ? this.cardNumber = card.number : this.cardNumber = '';
-        card ? this.cardPlaceHolder = card.placeHolder : this.cardPlaceHolder = '';
+        card ? this.id = card.id : this.id = '';
+        card ? this.title = card.title : this.title = '';
+        card ? this.type = card.type : this.type = '';
+        card ? this.number = card.number : this.number = '';
+        card ? this.placeHolder = card.placeHolder : this.placeHolder = '';
         card ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
         card ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
         card ? this.cvv = card.cvv : this.cvv = '';
@@ -27,17 +27,21 @@ export default class CreditCard {
     }
 
     displayObjectId() {
-        return this.objectId.length > 4 ? this.objectId.slice(0, 4) : this.objectId;
+        return this.id.length > 4 ? this.id.slice(0, 4) : this.id;
     }
 
     last4Digits() {
-        return "**** " + this.cardNumber.slice(-4);
+        return "**** " + this.number.slice(-4);
     }
 
     setExpirationDate(expirationDate) {
         let date = expirationDate.split('/');
         this.expiryMo = parseInt(date[0]);
         this.expiryYr = parseInt(date[1]);
+    }
+
+    isTruthy() {
+        return this.id;
     }
 
 }

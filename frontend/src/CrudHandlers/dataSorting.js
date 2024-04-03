@@ -1,9 +1,8 @@
-import {localCards} from "../LocalData/localCards.tsx";
 
-export const sortCards = () => {
+export const sortCards = (localCards) => {
     localCards.sort((a, b) => {
-        const nameA = a.cardPlaceHolder.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.cardPlaceHolder.toUpperCase(); // ignore upper and lowercase
+        const nameA = a.placeHolder.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.placeHolder.toUpperCase(); // ignore upper and lowercase
         if (nameA > nameB) {
             return -1; // a comes first, we sort descending
         }

@@ -1,18 +1,38 @@
-import React, {useState} from 'react';
-import {localCards} from '../LocalData/localCards.tsx';
+import React, {useState, useEffect} from 'react';
 import {handleDelete} from '../CrudHandlers/delete.js';
 import {Button, Table, Pagination, Dropdown, DropdownButton} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import "../Designs/buttons.css"
 import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
+import CreditCard from "../Model/card";
+
+const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 
 export default function HomePage() {
+    const [localCards, setLocalCards] = useState([]);
+
+    // Fetching the data from the API
+    useEffect(() => {
+        fetchAllCards();
+    }, []);
+
+    const fetchAllCards = async () => {
+        fetch(API_GET_ALL_URL)
+            .then(response => response.json())
+            .then(data => {
+                const cards = data.cards.map(card => new CreditCard(card));
+                setLocalCards(cards);
+                console.log(cards);
+            })
+            .catch(error => console.error(error));
+    }
+
     let navigate = useNavigate();
 
     // sorting the cards
-    sortCards();
+    sortCards(localCards);
 
     // States for pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,21 +65,21 @@ export default function HomePage() {
                     <tbody>
                     {
                         currentCards.length > 0 ? currentCards.map((creditCard) => {
-                            const cardLink = '/view/card/' + creditCard.objectId
+                            const cardLink = '/view/card/' + creditCard.id
                             return (
-                                <tr key={creditCard.objectId}>
+                                <tr key={creditCard.id}>
                                     <td onClick={() => navigate(cardLink)}
                                         style={{cursor: 'pointer'}}>{creditCard.displayObjectId()}</td>
                                     <td onClick={() => navigate(cardLink)}
-                                        style={{cursor: 'pointer'}}>{creditCard.cardPlaceHolder}</td>
+                                        style={{cursor: 'pointer'}}>{creditCard.placeHolder}</td>
                                     <td onClick={() => navigate(cardLink)}
-                                        style={{cursor: 'pointer'}}>{creditCard.cardType}</td>
+                                        style={{cursor: 'pointer'}}>{creditCard.type}</td>
                                     <td onClick={() => navigate(cardLink)}
                                         style={{cursor: 'pointer'}}>{creditCard.last4Digits()}</td>
-                                    <td><Link to={"/edit/card/" + creditCard.objectId}><Button
+                                    <td><Link to={"/edit/card/" + creditCard.id}><Button
                                     >Edit</Button></Link> &nbsp;
                                         <Button
-                                            onClick={() => handleDelete(creditCard.objectId, navigate)}>Delete</Button>
+                                            onClick={() => handleDelete(creditCard.id, fetchAllCards)}>Delete</Button>
                                     </td>
                                 </tr>
                             )
