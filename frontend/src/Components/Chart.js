@@ -1,13 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Pie } from 'react-chartjs-2';
 // Import the required components from Chart.js
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import {localCards} from "../LocalData/localCards.tsx";
+import CreditCard from "../Model/card";
 
 // Register the components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
+const API_SOCKET_UPDATER = 'ws://localhost:8080';
 const PieChart = () => {
+
+    const [localCards, setLocalCards] = useState([]);
+
+    useEffect(() => {
+        fetchAllCards();
+    }, []);
+
+    useEffect(() => {
+        const socket = new WebSocket(API_SOCKET_UPDATER);
+
+        socket.addEventListener('message', function (event) {
+            if (event.data === 'update') {
+                // Fetch the updated data from the backend
+                console.log('Data updated, fetch new data here');
+
+                fetchAllCards();
+            }
+        });
+
+        // Cleanup on component unmount
+        return () => socket.close();
+    }, []);
+
+    const fetchAllCards = async () => {
+        fetch(API_GET_ALL_URL)
+            .then(response => response.json())
+            .then(data => {
+                const cards = data.cards.map(card => new CreditCard(card));
+                setLocalCards(cards);
+                console.log(cards);
+            })
+            .catch(error => {
+                console.error(error);
+                setLocalCards([]);
+            });
+    }
+
+
     const backgroundColors = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',

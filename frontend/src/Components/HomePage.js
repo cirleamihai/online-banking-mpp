@@ -2,20 +2,64 @@ import React, {useState, useEffect} from 'react';
 import {handleDelete} from '../CrudHandlers/delete.js';
 import {Button, Table, Pagination, Dropdown, DropdownButton} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "../Designs/buttons.css"
 import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
+const API_HEALTH_CHECK = 'http://localhost:8000/health';
+const API_SOCKET_UPDATER = 'ws://localhost:8080';
 
 export default function HomePage() {
     const [localCards, setLocalCards] = useState([]);
+    const [backendIsDown, setBackendIsDown] = useState(false);
 
     // Fetching the data from the API
     useEffect(() => {
         fetchAllCards();
+    }, []);
+
+    useEffect(() => {
+        const checkBackendHealth = () => {
+            fetch(API_HEALTH_CHECK).then(response => {
+                if (response.ok) {
+                    setBackendIsDown(false);
+                    fetchAllCards();
+                } else {
+                    throw new Error('Backend is down');
+                }
+            }).catch(error => {
+                console.log(error);
+                fetchAllCards();
+                setBackendIsDown(true);
+            })
+        }
+
+        checkBackendHealth();
+
+        const interval = setInterval(() => {
+            checkBackendHealth();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [])
+
+    useEffect(() => {
+        const socket = new WebSocket(API_SOCKET_UPDATER);
+
+        socket.addEventListener('message', function (event) {
+            if (event.data === 'update') {
+                // Fetch the updated data from the backend
+                console.log('Data updated, fetch new data here');
+
+                fetchAllCards();
+            }
+        });
+
+        // Cleanup on component unmount
+        return () => socket.close();
     }, []);
 
     const fetchAllCards = async () => {
@@ -26,7 +70,10 @@ export default function HomePage() {
                 setLocalCards(cards);
                 console.log(cards);
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                console.error(error);
+                setLocalCards([]);
+            });
     }
 
     let navigate = useNavigate();
@@ -51,6 +98,11 @@ export default function HomePage() {
 
     return (
         <>
+            {backendIsDown && (
+                <div style={{backgroundColor: 'red', color: 'white', padding: '10px', textAlign: 'center'}}>
+                    The backend server is currently offline. Please try again later.
+                </div>
+            )}
             <div style={{margin: "10rem"}}>
                 <Table striped bordered hover size="sm" className="cards-table-color custom-table-hover">
                     <thead>

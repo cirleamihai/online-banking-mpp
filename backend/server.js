@@ -3,7 +3,33 @@ const cors = require("cors");
 const app = express();
 const creditCards = require("./localStorage.js");
 const CreditCard = require("./cardModel.js");
+const generateRandomCreditCard = require("./randomDataGenerator.js");
 const {v4: uuidv4} = require('uuid');
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 8080 });
+
+function generateAndAddCreditCards() {
+    const newCards = Array.from({ length: 20 }, () => generateRandomCreditCard());
+    newCards.forEach((card) => creditCards.push(card));
+
+    // Notify all connected clients that new data is available
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send('update'); // Simple message indicating data has been updated
+        }
+    });
+}
+// Set interval to generate new credit cards every 10 seconds
+setInterval(generateAndAddCreditCards, 10000);
+
+// WebSocket connection handler
+wss.on('connection', function connection(ws) {
+    console.log('Client connected');
+    ws.on('message', function incoming(message) {
+        console.log('Received message: %s', message);
+    });
+});
+
 
 app.use(cors());
 app.use(express.json());
@@ -25,6 +51,10 @@ app.get("/api/v1/credit-cards/:id", (req, res) => {
     }
 
     res.json({card});
+});
+
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
 });
 
 app.put("/api/v1/credit-cards/:id", (req, res) => {
@@ -65,9 +95,6 @@ app.delete('/api/v1/credit-cards/:id', (req, res) => {
     creditCards.splice(cardIndex, 1);
     res.status(204).send();
 });
-
-
-
 
 app.listen(8000, () => {
     console.log(`Server is running on port 8000.`);
