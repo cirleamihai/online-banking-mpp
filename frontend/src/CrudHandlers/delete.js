@@ -1,28 +1,29 @@
-const API_DELETE_URL = 'http://localhost:8000/api/v1/credit-cards';
 
-export function handleDelete(cardId, fetchAllCards, path="/") {
+export function handleDelete(deleteAPI, object, fetchAPIObjects, fetcherArgs, path="/") {
+    const objName = object.objectName;
+
     // Delete card from localCards only if popup is confirmed
-    if (!confirmDelete()) {
+    if (!confirmDelete(objName)) {
         return;
     }
 
-    fetch(`${API_DELETE_URL}/${cardId}`, {
+    fetch(`${deleteAPI}/${object.id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
         },
     }).then(response => {
         if (response.ok) {
-            console.log('Card deleted successfully');
-            fetchAllCards();
+            console.log(`${objName} deleted successfully`);
+            fetchAPIObjects(...fetcherArgs);
         } else {
-            console.error('Failed to delete card');
+            console.error(`Failed to delete ${objName}`);
         }
     }).catch(error => {
-        console.error('Failed to delete card', error);
+        console.error(`Failed to delete ${objName}`, error);
     });
 }
 
-function confirmDelete() {
-    return window.confirm("Are you sure you want to delete this card?");
+function confirmDelete(objName='Card') {
+    return window.confirm(`Are you sure you want to delete this ${objName}?`);
 }

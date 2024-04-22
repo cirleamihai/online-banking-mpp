@@ -7,6 +7,7 @@ export default class CreditCard {
     expiryMo: number;
     expiryYr: number;
     cvv: string;
+    objectName: string = 'Credit Card';
 
     constructor(card) {
         card ? this.id = card.id : this.id = '';

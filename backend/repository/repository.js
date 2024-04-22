@@ -1,7 +1,6 @@
 const database = require("../database/databaseHandler");
 const CreditCard = require("../models/cardModel");
 const Purchase = require("../models/purchasesModel");
-const {load} = require("nodemon/lib/rules");
 
 let creditCards = [];
 let purchases = [];

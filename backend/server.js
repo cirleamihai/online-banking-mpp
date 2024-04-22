@@ -1,9 +1,5 @@
-const Purchase = require('./models/purchasesModel.js');
-const CreditCard = require("./models/cardModel.js");
-const generateRandomCreditCard = require("./controller/randomDataGenerator.js");
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8080 });
-const database = require('./database/databaseHandler.js');
 const repo = require('./repository/repository.js');
 
 // Using the express framework
@@ -23,13 +19,7 @@ const purchasesRouter = require('./routes/purchases.js');
 app.use('/api/v1/', creditCardsRouter);
 app.use('/api/v1/', purchasesRouter);
 
-let creditCards = [];
-let purchases = [];
-
-function generateAndAddCreditCards() {
-    const newCards = Array.from({ length: 20 }, () => generateRandomCreditCard());
-    newCards.forEach((card) => creditCards.push(card));
-
+function sendSocketUpdates() {
     // Notify all connected clients that new data is available
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
@@ -38,7 +28,7 @@ function generateAndAddCreditCards() {
     });
 }
 // GOLD TASK FOR ASSIGNMENT 2
-// setInterval(generateAndAddCreditCards, 10000);
+// setInterval(sendSocketUpdates, 10000);
 
 repo.loadData().then(() => {
     console.log('Data loaded successfully');

@@ -36,7 +36,7 @@ export default function AddCard(testing) {
     creditCard.type = cardType;
     creditCard.setExpirationDate(expiry);
     creditCard.id = uuidv4();
-    creditCard.title = cardHolder.split(" ")[0] + "'s Card";
+    creditCard.title = cardHolder.split(" ")[0] + " Card";
     console.log(creditCard);
 
     // Add the credit card to the local storage

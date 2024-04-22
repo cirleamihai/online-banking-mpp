@@ -7,40 +7,28 @@ import "../Designs/buttons.css"
 import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
+import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
+const API_DELETE_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_SOCKET_UPDATER = 'ws://localhost:8080';
 
 export default function HomePage() {
     const [localCards, setLocalCards] = useState([]);
     const [backendIsDown, setBackendIsDown] = useState(false);
+    const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard];
 
     // Fetching the data from the API
     useEffect(() => {
-        fetchAllCards();
+        fetchAPIObjects(...fetcherArgs).then(r => {});
     }, []);
 
     useEffect(() => {
-        const checkBackendHealth = () => {
-            fetch(API_HEALTH_CHECK).then(response => {
-                if (response.ok) {
-                    setBackendIsDown(false);
-                    fetchAllCards();
-                } else {
-                    throw new Error('Backend is down');
-                }
-            }).catch(error => {
-                console.log(error);
-                fetchAllCards();
-                setBackendIsDown(true);
-            })
-        }
-
-        checkBackendHealth();
+        checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {});
 
         const interval = setInterval(() => {
-            checkBackendHealth();
+            checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {});
         }, 5000);
 
         return () => clearInterval(interval);
@@ -54,27 +42,13 @@ export default function HomePage() {
                 // Fetch the updated data from the backend
                 console.log('Data updated, fetch new data here');
 
-                fetchAllCards();
+                fetchAPIObjects(...fetcherArgs).then(r => {});
             }
         });
 
         // Cleanup on component unmount
         return () => socket.close();
     }, []);
-
-    const fetchAllCards = async () => {
-        fetch(API_GET_ALL_URL)
-            .then(response => response.json())
-            .then(data => {
-                const cards = data.cards.map(card => new CreditCard(card));
-                setLocalCards(cards);
-                console.log(cards);
-            })
-            .catch(error => {
-                console.error(error);
-                setLocalCards([]);
-            });
-    }
 
     let navigate = useNavigate();
 
@@ -103,7 +77,11 @@ export default function HomePage() {
                     The backend server is currently offline. Please try again later.
                 </div>
             )}
-            <div style={{margin: "10rem"}}>
+            <Link className="d-grip gap-2" to="/purchases">
+                <Button size="lg" className="btn btn-primary">View Purchases</Button>
+            </Link>
+            <div style={{margin: "5rem"}}>
+
                 <Table striped bordered hover size="sm" className="cards-table-color custom-table-hover">
                     <thead>
                     <tr>
@@ -131,7 +109,8 @@ export default function HomePage() {
                                     <td><Link to={"/edit/card/" + creditCard.id}><Button
                                     >Edit</Button></Link> &nbsp;
                                         <Button
-                                            onClick={() => handleDelete(creditCard.id, fetchAllCards)}>Delete</Button>
+                                            onClick={() => handleDelete(API_DELETE_URL, creditCard,
+                                                fetchAPIObjects, fetcherArgs)}>Delete</Button>
                                     </td>
                                 </tr>
                             )
@@ -145,7 +124,7 @@ export default function HomePage() {
                 <Link className="d-grip gap-2" to="/view/chart/">
                     <Button size="lg" className="submit-btn">View Chart</Button></Link>
             </div>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between control-section">
                 {/* Pagination container */}
                 <div className="pagination-container">
                     <Pagination>
@@ -168,6 +147,8 @@ export default function HomePage() {
                         ))}
                     </DropdownButton>
                 </div>
+
+
             </div>
         </>
     )
