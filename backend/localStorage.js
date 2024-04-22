@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const CreditCard = require('./cardModel.js');
+const CreditCard = require('./models/cardModel.js');
 
 const databaseCards = [
     {
@@ -157,5 +157,9 @@ const databaseCards = [
 const localCards = databaseCards.map(card => {
     return new CreditCard(card)
 });
+
+for (let i = 0; i < localCards.length; i++) {
+    console.log(uuidv4());
+}
 
 module.exports = localCards;

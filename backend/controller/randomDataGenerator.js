@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const CreditCard = require('./cardModel.js'); // Adjust the path as necessary
+const CreditCard = require('../models/cardModel.js'); // Adjust the path as necessary
 
 function generateRandomCreditCard() {
     // Predefined lists of data

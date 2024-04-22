@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 class CreditCard {
     id;
     title;
@@ -9,7 +11,11 @@ class CreditCard {
     cvv;
 
     constructor(card) {
-        card.id ? this.id = card.id: this.id = '';
+        if (!card) {
+            return;
+        }
+
+        card.id ? this.id = card.id: this.id = uuidv4();
         card.title ? this.title = card.title : this.title = '';
         card.type ? this.type = card.type : this.type = '';
         card.number ? this.number = card.number : this.number = '';
@@ -17,6 +23,17 @@ class CreditCard {
         card.expiryMo ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
         card.expiryYr ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
         card.cvv ? this.cvv = card.cvv : this.cvv = '';
+    }
+
+    loadFromSQLDatabase(card) {
+        this.id = card.id;
+        this.title = card.title;
+        this.type = card.cardType;
+        this.number = card.cardNumber;
+        this.placeHolder = card.placeHolder;
+        this.expiryMo = card.expiryMo;
+        this.expiryYr = card.expiryYr;
+        this.cvv = card.cvv;
     }
 
     stringifyExpirationDate() {
@@ -40,6 +57,16 @@ class CreditCard {
         this.expiryYr = parseInt(date[1]);
     }
 
+    toAddSQLString() {
+        // return an SQL string to insert the object into the database
+        return "'" + this.id + "', '" + this.title + "', '" + this.type + "', '" + this.placeHolder +
+            "', '" + this.number + "', " + this.expiryMo + ", " + this.expiryYr + ", '" + this.cvv + "'";
+    }
+
+    toUpdateSQLString() {
+        return "title = '" + this.title + "', cardType = '" + this.type + "', placeHolder = '" + this.placeHolder +
+            "', cardNumber = '" + this.number + "', expiryMo = " + this.expiryMo + ", expiryYr = " + this.expiryYr + ", cvv = '" + this.cvv + "'";
+    }
 }
 
 module.exports = CreditCard;
