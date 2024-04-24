@@ -4,7 +4,7 @@ import App from './App';
 import AddCard from "./Components/AddCard";
 import EditCard from "./Components/EditPage";
 import ViewCard from "./Components/ViewCard";
-import {localCards} from "./LocalData/localCards";
+import {localCards} from "./LocalStorage/localCards";
 import CreditCard from "./Model/card";
 import {NewCardForm} from "./Designs/cardTemplate";
 import userEvent from "@testing-library/user-event";

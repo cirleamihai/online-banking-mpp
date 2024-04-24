@@ -4,6 +4,7 @@ import {fetchAPIObjects} from "../CrudHandlers/backendHandlers";
 import CreditCard from "../Model/card";
 import Purchase from "../Model/purchase";
 import {useNavigate} from "react-router-dom";
+import {repo} from "../LocalStorage/repository";
 
 const API_GET_ALL_CARDS_URL = 'http://localhost:8000/api/v1/credit-cards';
 
@@ -53,23 +54,37 @@ function AddPurchase() {
         e.preventDefault();
         const validationErrors = validate(formData);
         if (Object.keys(validationErrors).length === 0) {
-            fetch('http://localhost:8000/api/v1/purchases/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({purchase: new Purchase(formData)}),
-            }).then((response) => {
-                if (response.ok) {
-                    history('/purchases');
-
-                    console.log("Purchase added successfully");
-                } else {
-                    console.log("Purchase not added");
+            for (let card in localCards) {
+                if (card.id === formData.cardID) {
+                    formData.cardNumber = card.number;
+                    break;
                 }
-            });
+            }
+            const operation = (formData) => {
+                fetch('http://localhost:8000/api/v1/purchases/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({purchase: new Purchase(formData)}),
+                }).then((response) => {
+                    if (response.ok) {
+                        console.log("Purchase added successfully");
+                    } else {
+                        console.log("Purchase not added");
+                    }
+                });
+            }
+            const args = [formData];
 
-            setErrors({});
+            if (repo.isServerOnline()) {
+                operation(...args);
+            } else {
+                repo.addOperation(operation, args);
+                repo.addPurchase(new Purchase(formData));
+            }
+
+            history('/purchases');
         } else {
             console.log("onError", validationErrors);
             setErrors(validationErrors);

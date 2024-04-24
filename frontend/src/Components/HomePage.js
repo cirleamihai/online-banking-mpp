@@ -8,6 +8,7 @@ import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
 import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
+import {repo} from "../LocalStorage/repository.js";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
@@ -32,7 +33,7 @@ export default function HomePage() {
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [])
+    }, []);
 
     useEffect(() => {
         const socket = new WebSocket(API_SOCKET_UPDATER);
@@ -81,7 +82,6 @@ export default function HomePage() {
                 <Button size="lg" className="btn btn-primary">View Purchases</Button>
             </Link>
             <div style={{margin: "5rem"}}>
-
                 <Table striped bordered hover size="sm" className="cards-table-color custom-table-hover">
                     <thead>
                     <tr>

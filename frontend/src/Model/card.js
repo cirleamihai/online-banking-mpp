@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from 'uuid';
+
 export default class CreditCard {
     id: string;
     title: string;
@@ -10,7 +12,7 @@ export default class CreditCard {
     objectName: string = 'Credit Card';
 
     constructor(card) {
-        card ? this.id = card.id : this.id = '';
+        card ? this.id = card.id : this.id = uuidv4();
         card ? this.title = card.title : this.title = '';
         card ? this.type = card.type : this.type = '';
         card ? this.number = card.number : this.number = '';
