@@ -10,6 +10,7 @@ export default class CreditCard {
     expiryYr: number;
     cvv: string;
     objectName: string = 'Credit Card';
+    usageNumber: number = 0;
 
     constructor(card) {
         card ? this.id = card.id : this.id = uuidv4();
@@ -49,6 +50,16 @@ export default class CreditCard {
 
     purchaseOptionDisplayer() {
         return this.placeHolder + " | " + this.last4Digits();
+    }
+
+    checkUsageNumber(purchases) {
+        this.usageNumber = 0;
+
+        for (let purchase of purchases) {
+            if (purchase.cardID === this.id) {
+                this.usageNumber++;
+            }
+        }
     }
 
 }

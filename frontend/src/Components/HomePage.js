@@ -8,21 +8,27 @@ import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
 import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
-import {repo} from "../LocalStorage/repository.js";
+import Purchase from "../Model/purchase";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
+const API_GET_ALL_PURCHASES_URL = 'http://localhost:8000/api/v1/purchases';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
 const API_DELETE_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_SOCKET_UPDATER = 'ws://localhost:8080';
 
 export default function HomePage() {
     const [localCards, setLocalCards] = useState([]);
+    const [localPurchases, setLocalPurchases] = useState([]);
     const [backendIsDown, setBackendIsDown] = useState(false);
     const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard];
+    const fetcherArgs2 = [API_GET_ALL_PURCHASES_URL, setLocalPurchases, 'purchases', Purchase];
 
     // Fetching the data from the API
     useEffect(() => {
-        fetchAPIObjects(...fetcherArgs).then(r => {});
+        fetchAPIObjects(...fetcherArgs).then(r => {
+            fetchAPIObjects(...fetcherArgs2).then(r => {
+            });
+        });
     });
 
     useEffect(() => {
@@ -89,13 +95,16 @@ export default function HomePage() {
                         <th>CardHolder</th>
                         <th>CardType</th>
                         <th>LastDigits</th>
+                        <th>Usages</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {
                         currentCards.length > 0 ? currentCards.map((creditCard) => {
-                            const cardLink = '/view/card/' + creditCard.id
+                            const cardLink = '/view/card/' + creditCard.id;
+                            creditCard.checkUsageNumber(localPurchases); // loading the usage number
+
                             return (
                                 <tr key={creditCard.id}>
                                     <td onClick={() => navigate(cardLink)}
@@ -106,6 +115,7 @@ export default function HomePage() {
                                         style={{cursor: 'pointer'}}>{creditCard.type}</td>
                                     <td onClick={() => navigate(cardLink)}
                                         style={{cursor: 'pointer'}}>{creditCard.last4Digits()}</td>
+                                    <td>{creditCard.usageNumber}</td>
                                     <td><Link to={"/edit/card/" + creditCard.id}><Button
                                     >Edit</Button></Link> &nbsp;
                                         <Button
