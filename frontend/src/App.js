@@ -7,6 +7,7 @@ import PieChart from "./Components/Chart.js";
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ViewCard from "./Components/ViewCard";
 import PurchasesHomePage from "./Components/PurchasesHomePage";
+import AddPurchase from "./Components/AddPurchase";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/card/add" element={<AddCard/>}/>
                     <Route path="/view/chart" element={<PieChart/>}/>
                     <Route path="/purchases" element={<PurchasesHomePage/>}/>
+                    <Route path="/purchase/add" element={<AddPurchase/>}/>
                 </Routes>
             </Router>
         </div>

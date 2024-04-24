@@ -1,3 +1,5 @@
+use online_banking;
+
 select * from purchases;
 select * from creditCards order by placeHolder desc;
 

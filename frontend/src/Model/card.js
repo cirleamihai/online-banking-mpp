@@ -45,4 +45,8 @@ export default class CreditCard {
         return this.id;
     }
 
+    purchaseOptionDisplayer() {
+        return this.placeHolder + " | " + this.last4Digits();
+    }
+
 }

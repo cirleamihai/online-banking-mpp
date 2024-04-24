@@ -1,13 +1,10 @@
-import CreditCard from "../Model/card";
-
-
 export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model) {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const objects = data[jsonObjectName].map(obj => new Model(obj));
             setLocalObjects(objects);
-            console.log(objects);
+            // console.log(objects);
         })
         .catch(error => {
             console.error(error);

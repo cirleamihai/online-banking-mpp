@@ -30,6 +30,13 @@ async function fetchData(table = 'creditCards') {
     const pool = await getConnection();
     if (pool) {
         try {
+            if (table === 'purchases') {
+                const result = await pool.request()
+                    .query('SELECT p.*, c.cardNumber FROM purchases p inner join creditCards c on p.cardID = c.id');
+
+                return result.recordset;
+            }
+
             const result = await pool.request()
                 .query('SELECT * FROM ' + table);
             // console.log(result.recordset);

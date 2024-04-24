@@ -22,7 +22,7 @@ export default function HomePage() {
     // Fetching the data from the API
     useEffect(() => {
         fetchAPIObjects(...fetcherArgs).then(r => {});
-    }, []);
+    });
 
     useEffect(() => {
         checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {});

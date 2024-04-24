@@ -3,6 +3,7 @@ class Purchase {
     totalValue;
     merchant;
     cardID;
+    cardNumber;
 
     constructor(purchases) {
         if (!purchases) {
@@ -13,6 +14,7 @@ class Purchase {
         purchases.totalValue ? this.totalValue = purchases.totalValue : this.totalValue = 0;
         purchases.merchant ? this.merchant = purchases.merchant : this.merchant = '';
         purchases.cardID ? this.cardID = purchases.cardID : this.cardID = '';
+        purchases.cardNumber ? this.cardNumber = purchases.cardNumber : this.cardNumber = '';
     }
 
     loadFromSQLDatabase(purchases) {
@@ -20,6 +22,7 @@ class Purchase {
         this.totalValue = purchases.totalValue;
         this.merchant = purchases.merchant;
         this.cardID = purchases.cardID;
+        this.cardNumber = purchases.cardNumber;
     }
 
     toAddSQLString() {
