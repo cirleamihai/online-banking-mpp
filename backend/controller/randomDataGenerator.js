@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
-const CreditCard = require('../models/cardModel.js'); // Adjust the path as necessary
+const CreditCard = require('../models/cardModel.js');
+const {addData} = require("../database/databaseHandler.js");
+const {addDataArray} = require("../database/databaseHandler"); // Adjust the path as necessary
 
 function generateRandomCreditCard() {
     // Predefined lists of data
@@ -76,7 +78,7 @@ function generateRandomCreditCard() {
     // Creating a random CreditCard object
     const card = {
         id: uuidv4(), // Simple random ID generator
-        title: placeHolder + "'s Card",
+        title: placeHolder + " Card",
         type: getRandomElement(cardTypes),
         number: Math.floor(Math.random() * 9000 + 1000) + ' ' + Math.floor(Math.random() * 9000 + 1000) + ' ' + Math.floor(Math.random() * 9000 + 1000) + ' ' + Math.floor(Math.random() * 9000 + 1000), // Generates a 16-digit card number
         placeHolder: placeHolder,
@@ -87,6 +89,14 @@ function generateRandomCreditCard() {
 
     return new CreditCard(card);
 }
+
+// for (let j = 0; j < 50; ++j) {
+//     const dataArr = [];
+//     for (let i = 0; i < 1000; ++i) {
+//         dataArr.push(generateRandomCreditCard());
+//     }
+//     addDataArray('creditCards', dataArr);
+// }
 
 // Example usage
 module.exports = generateRandomCreditCard;

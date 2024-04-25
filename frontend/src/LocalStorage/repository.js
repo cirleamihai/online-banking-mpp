@@ -7,21 +7,20 @@ class repository {
     constructor() {}
 
     addCard(card) {
-        this.frontendCards.push(card);
+        this.frontendCards = [...this.frontendCards, card];
     }
 
     addPurchase(purchase) {
-        this.frontendPurchases.push(purchase);
+        this.frontendPurchases = [...this.frontendPurchases, purchase];
     }
 
     updateCards(card) {
-        const index = this.frontendCards.findIndex(c => c.id === card.id);
-        this.frontendCards[index] = card;
-    }
-
-    updatePurchase(purchase) {
-        const index = this.frontendPurchases.findIndex(p => p.id === purchase.id);
-        this.frontendPurchases[index] = purchase;
+        this.frontendCards = this.frontendCards.map(c => {
+            if (c.id === card.id) {
+                return card;
+            }
+            return c;
+        });
     }
 
     serverOnline() {
@@ -85,11 +84,9 @@ class repository {
 
     deleteObject(object) {
         if (object.objectName === 'Purchase') {
-            const index = this.frontendPurchases.findIndex(p => p.id === object.id);
-            this.frontendPurchases.splice(index, 1);
+            this.frontendPurchases = this.frontendPurchases.filter(p => p.id !== object.id);
         } else if (object.objectName === 'Credit Card') {
-            const index = this.frontendCards.findIndex(c => c.id === object.id);
-            this.frontendCards.splice(index, 1);
+            this.frontendCards = this.frontendCards.filter(c => c.id !== object.id);
         }
     }
 }

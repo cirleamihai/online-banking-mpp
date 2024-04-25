@@ -59,6 +59,7 @@ router.post('/credit-cards', (req, res) => {
 // Delete an existing card
 router.delete('/credit-cards/:id', (req, res) => {
     const creditCards = repo.getCreditCards();
+    console.log(creditCards, req.params.id);
     const cardIndex = creditCards.findIndex((card) => card.id === req.params.id);
     if (cardIndex === -1) {
         res.status(404).json({error: "Card not found."});

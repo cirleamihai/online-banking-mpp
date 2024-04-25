@@ -11,19 +11,12 @@ export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, M
             const objects = data[jsonObjectName].map(obj => new Model(obj));
             setLocalObjects(objects);
 
-            // if the server was offline, and the health checker didn't catch it going back online
-            // set the server status to online
-            if (!repo.isServerOnline()) {
-                repo.executeOperations().serverOnline(); // set server status to online
-            }
-
-            repo.setObject(jsonObjectName, objects); // save objects to local storage
+            repo.executeOperations().setObject(jsonObjectName, objects); // save objects to local storage
             // console.log(objects);
         })
         .catch(error => {
-            console.log(repo.frontendCards, repo.operationsQueue);
-            console.log(repo.isServerOnline());
-            console.error(error);
+            // console.error(error);
+            repo.serverOffline(); // set server status to offline
             setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage
         });
 }
@@ -38,7 +31,7 @@ export async function checkBackendHealth (apiHealthUrl, apiUrl, setLocalObjects,
         }
     }).catch(error => {
         repo.serverOffline(); // set server status to offline
-        console.log(error);
+        // console.log(error);
         setBackendIsDown(true);
     }).finally(() => {
         fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model);

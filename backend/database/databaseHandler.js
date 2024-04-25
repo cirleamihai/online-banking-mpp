@@ -39,7 +39,6 @@ async function fetchData(table = 'creditCards') {
 
             const result = await pool.request()
                 .query('SELECT * FROM ' + table);
-            // console.log(result.recordset);
             return result.recordset;
         } catch (err) {
             // throw new Error('Error executing query:', err);
@@ -49,7 +48,7 @@ async function fetchData(table = 'creditCards') {
 }
 
 async function deleteData(table = 'creditCards', data) {
-    if (badInput(data)){
+    if (badInput(data)) {
         throw new Error('Invalid ID caught in deleteData() function. SQL Injection code');
     }
 
@@ -90,6 +89,26 @@ async function addData(table = 'creditCards', data) {
     }
 }
 
+async function addDataArray(table = 'creditCards', data) {
+    const pool = await getConnection();
+    if (pool) {
+        let query = 'INSERT INTO ' + table + ' VALUES '
+        for (let i = 0; i < data.length; i++) {
+            const dataStr = data[i].toAddSQLString();
+            query += '(' + dataStr + '), ';
+        }
+        try {
+            const result = await pool.request()
+                .query(query.slice(0, -2));
+            console.log(result.rowsAffected);
+        } catch (err) {
+            // throw new Error('Error executing query:', err);
+            console.log('Error executing query:', err, );
+        }
+    }
+
+}
+
 async function updateData(table = 'creditCards', data) {
     const pool = await getConnection();
     if (pool) {
@@ -109,5 +128,6 @@ module.exports = {
     fetchData,
     deleteData,
     addData,
+    addDataArray,
     updateData
 }

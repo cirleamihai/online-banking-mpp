@@ -9,6 +9,7 @@ import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
 import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
 import Purchase from "../Model/purchase";
+import {repo} from "../LocalStorage/repository";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_GET_ALL_PURCHASES_URL = 'http://localhost:8000/api/v1/purchases';
@@ -25,17 +26,25 @@ export default function HomePage() {
 
     // Fetching the data from the API
     useEffect(() => {
-        fetchAPIObjects(...fetcherArgs).then(r => {
-            fetchAPIObjects(...fetcherArgs2).then(r => {
+        console.log("Fetching data from the API");
+        const interval = setInterval(() => {
+            fetchAPIObjects(...fetcherArgs).then(r => {
+                fetchAPIObjects(...fetcherArgs2).then(r => {
+                });
             });
-        });
-    });
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
-        checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {});
+        console.log("Checking the backend health");
+        checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
+        });
 
         const interval = setInterval(() => {
-            checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {});
+            checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
+            });
         }, 5000);
 
         return () => clearInterval(interval);
@@ -49,7 +58,8 @@ export default function HomePage() {
                 // Fetch the updated data from the backend
                 console.log('Data updated, fetch new data here');
 
-                fetchAPIObjects(...fetcherArgs).then(r => {});
+                fetchAPIObjects(...fetcherArgs).then(r => {
+                });
             }
         });
 
@@ -119,8 +129,10 @@ export default function HomePage() {
                                     <td><Link to={"/edit/card/" + creditCard.id}><Button
                                     >Edit</Button></Link> &nbsp;
                                         <Button
-                                            onClick={() => handleDelete(API_DELETE_URL, creditCard,
-                                                fetchAPIObjects, fetcherArgs)}>Delete</Button>
+                                            onClick={() => {
+                                                handleDelete(API_DELETE_URL, creditCard,
+                                                    fetchAPIObjects, fetcherArgs);
+                                            }}>Delete</Button>
                                     </td>
                                 </tr>
                             )
