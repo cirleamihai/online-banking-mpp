@@ -10,15 +10,14 @@ router.get("/credit-cards", (req, res) => {
 });
 
 // get a credit card by id
-router.get("/credit-cards/:id", (req, res) => {
+router.get("/credit-cards/:id", async (req, res) => {
     if (!req.params.id) {
         res.status(400).json({error: "Card ID not provided."});
         return;
     }
 
-    const creditCards = repo.getCreditCards();
-    const card = creditCards.find((card) => card.id === req.params.id);
-    if (card == null) {
+    const card = await repo.getCreditCardByID(req.params.id);
+    if (!card.isTruthy()) {
         res.status(404).json({error: "Card not found."});
         return;
     }
@@ -27,11 +26,10 @@ router.get("/credit-cards/:id", (req, res) => {
 });
 
 // update a credit card
-router.put("/credit-cards/:id", (req, res) => {
-    const creditCards = repo.getCreditCards();
-    const cardIndex = creditCards.findIndex((card) => card.id === req.params.id);
+router.put("/credit-cards/:id", async (req, res) => {
+    const creditCard = await repo.getCreditCardByID(req.params.id);
 
-    if (cardIndex === -1) {
+    if (!creditCard.isTruthy()) {
         res.status(404).json({error: "Card not found."});
         return;
     }
@@ -57,16 +55,14 @@ router.post('/credit-cards', (req, res) => {
 });
 
 // Delete an existing card
-router.delete('/credit-cards/:id', (req, res) => {
-    const creditCards = repo.getCreditCards();
-    console.log(creditCards, req.params.id);
-    const cardIndex = creditCards.findIndex((card) => card.id === req.params.id);
-    if (cardIndex === -1) {
+router.delete('/credit-cards/:id', async (req, res) => {
+    const creditCard = await repo.getCreditCardByID(req.params.id);
+    if (!creditCard.isTruthy()) {
         res.status(404).json({error: "Card not found."});
         return;
     }
 
-    database.deleteData('creditCards', creditCards[cardIndex]).then(() => {
+    database.deleteData('creditCards', creditCard, req.params.id).then(() => {
         res.status(204).send();
     });
 });

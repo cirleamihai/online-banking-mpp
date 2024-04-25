@@ -9,6 +9,7 @@ class CreditCard {
     expiryMo;
     expiryYr;
     cvv;
+    usageNumber;
 
     constructor(card) {
         if (!card) {
@@ -23,6 +24,7 @@ class CreditCard {
         card.expiryMo ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
         card.expiryYr ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
         card.cvv ? this.cvv = card.cvv : this.cvv = '';
+        card.usageNumber ? this.usageNumber = card.usageNumber : this.usageNumber = 0;
     }
 
     loadFromSQLDatabase(card) {
@@ -34,6 +36,7 @@ class CreditCard {
         this.expiryMo = card.expiryMo;
         this.expiryYr = card.expiryYr;
         this.cvv = card.cvv;
+        this.usageNumber = card.UsageCount;
     }
 
     stringifyExpirationDate() {
@@ -66,6 +69,10 @@ class CreditCard {
     toUpdateSQLString() {
         return "title = '" + this.title + "', cardType = '" + this.type + "', placeHolder = '" + this.placeHolder +
             "', cardNumber = '" + this.number + "', expiryMo = " + this.expiryMo + ", expiryYr = " + this.expiryYr + ", cvv = '" + this.cvv + "'";
+    }
+
+    isTruthy() {
+        return this.id && this.number && this.expiryMo && this.expiryYr && this.cvv;
     }
 }
 

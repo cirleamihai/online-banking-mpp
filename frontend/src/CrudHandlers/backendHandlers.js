@@ -1,23 +1,23 @@
 import {repo} from '../LocalStorage/repository.js';
 
 export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model) {
-    if (!repo.isServerOnline()) {
-        setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage
-    }
+    setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage first
 
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const objects = data[jsonObjectName].map(obj => new Model(obj));
-            setLocalObjects(objects);
+            repo.executeOperations()
 
-            repo.executeOperations().setObject(jsonObjectName, objects); // save objects to local storage
+            if (repo.synchronize()) {
+                setLocalObjects(objects);
+                repo.setObject(jsonObjectName, objects); // save objects to local storage
+            }
             // console.log(objects);
         })
         .catch(error => {
             // console.error(error);
             repo.serverOffline(); // set server status to offline
-            setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage
         });
 }
 

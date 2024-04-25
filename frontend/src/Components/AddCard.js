@@ -7,7 +7,7 @@ import {repo} from "../LocalStorage/repository";
 
 const API_ADD_URL = "http://localhost:8000/api/v1/credit-cards";
 
-export default function AddCard(testing) {
+export default function AddCard() {
     let creditCard = undefined; // Create a new credit card object
 
     // Initialize state variables for each input field
@@ -54,15 +54,20 @@ export default function AddCard(testing) {
             })
         }
 
+        repo.addCard(creditCard);
         const args = [API_ADD_URL, creditCard];
         if (repo.isServerOnline()) {
             operation(...args);
         } else {
             repo.addOperation(operation, args);
-            repo.addCard(creditCard);
+        }
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        history('/');
+        sleep(1).then(() => {
+            history('/');
+        });
     }
 
     return NewCardForm(creditCard, handleSubmit, setCardNumber, setCardHolder, setExpiry, setCvv, setCardType);

@@ -21,6 +21,7 @@ export default class CreditCard {
         card ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
         card ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
         card ? this.cvv = card.cvv : this.cvv = '';
+        card ? this.usageNumber = card.usageNumber : this.usageNumber = 0;
     }
 
     stringifyExpirationDate() {
@@ -45,7 +46,7 @@ export default class CreditCard {
     }
 
     isTruthy() {
-        return this.id;
+        return this.number && this.expiryMo && this.expiryYr && this.cvv;
     }
 
     purchaseOptionDisplayer() {

@@ -34,6 +34,10 @@ class Purchase {
         // return an SQL string to update the object in the database
         return "totalValue = " + this.totalValue + ", merchant = '" + this.merchant + "', cardID = '" + this.cardID + "'";
     }
+
+    isTruthy() {
+        return this.id && this.totalValue && this.merchant;
+    }
 }
 
 module.exports = Purchase;

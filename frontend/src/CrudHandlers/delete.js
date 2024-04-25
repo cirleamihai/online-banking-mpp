@@ -27,12 +27,12 @@ export function handleDelete(deleteAPI, object, fetchAPIObjects, fetcherArgs, pa
     }
 
     const args = [deleteAPI, object, fetchAPIObjects, fetcherArgs];
+    repo.deleteObject(object);
+    fetcherArgs[1](repo.getObjectByObject(object));
     if (repo.isServerOnline()) {
         operation(...args);
     } else {
         repo.addOperation(operation, args);
-        repo.deleteObject(object);
-        fetcherArgs[1](repo.getObjectbyObject(object));
     }
 }
 

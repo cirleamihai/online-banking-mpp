@@ -12,8 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 // Including the routes
-const creditCardsRouter = require('./routes/creditCards.js');
-const purchasesRouter = require('./routes/purchases.js');
+const creditCardsRouter = require('./routes/creditCardsAPI.js');
+const purchasesRouter = require('./routes/purchasesAPI.js');
 
 // Using the routes
 app.use('/api/v1/', creditCardsRouter);

@@ -3,24 +3,40 @@ class repository {
     frontendPurchases = [];
     backendOnline = false;
     operationsQueue = [];
+    changes = 0;
 
-    constructor() {}
+    constructor() {
+    }
+
+    synchronize() {
+        // If we changed something, we don't want to synchronize with the database since the database
+        // might need to perform some operations on the data that we already did.
+        if (this.changes > 0) {
+            this.changes = 0;
+            return false;
+        }
+
+        return true;
+    }
 
     addCard(card) {
         this.frontendCards = [...this.frontendCards, card];
+        this.changes++;
     }
 
     addPurchase(purchase) {
         this.frontendPurchases = [...this.frontendPurchases, purchase];
+        this.changes++;
     }
 
-    updateCards(card) {
+    updateCard(card) {
         this.frontendCards = this.frontendCards.map(c => {
             if (c.id === card.id) {
                 return card;
             }
             return c;
         });
+        this.changes++;
     }
 
     serverOnline() {
@@ -33,6 +49,10 @@ class repository {
 
     isServerOnline() {
         return this.backendOnline;
+    }
+
+    getCardById(id) {
+        return this.frontendCards.find(c => c.id === id);
     }
 
     getCards() {
@@ -74,7 +94,7 @@ class repository {
         }
     }
 
-    getObjectbyObject(object) {
+    getObjectByObject(object) {
         if (object.objectName === 'Purchase') {
             return this.frontendPurchases;
         } else if (object.objectName === 'Credit Card') {
@@ -85,9 +105,17 @@ class repository {
     deleteObject(object) {
         if (object.objectName === 'Purchase') {
             this.frontendPurchases = this.frontendPurchases.filter(p => p.id !== object.id);
+            this.frontendCards = this.frontendCards.map(card => {
+                if (card.id === object.cardID) {
+                    card.usageNumber--;
+                }
+                return card;
+            })
         } else if (object.objectName === 'Credit Card') {
             this.frontendCards = this.frontendCards.filter(c => c.id !== object.id);
+            this.frontendPurchases = this.frontendPurchases.filter(p => p.cardID !== object.id);
         }
+        this.changes++;
     }
 }
 

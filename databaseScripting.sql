@@ -2,6 +2,7 @@ use online_banking;
 
 select * from purchases;
 select * from creditCards order by placeHolder desc;
+select count(*) from creditCards;
 
 
 create table creditCards (
@@ -36,8 +37,6 @@ INSERT INTO creditCards (id, title, cardType, placeHolder, cardNumber, expiryMo,
 ('4cce72c1-5a1b-4b85-a0eb-ed518f70bd16', 'Personal Savings', 'Visa', 'Jennifer Martinez', '5555 6666 7777 8888', 9, 36, '789'),
 ('2604306c-a761-4fd5-8b82-188d7d15cada', 'Vacation Fund', 'MasterCard', 'Christopher Taylor', '6666 7777 8888 9999', 12, 37, '012');
 
-
-
 INSERT INTO purchases (id, totalValue, merchant, cardID) VALUES
 ('831fc5c2-8e50-413c-a3d6-07c2b0fccc00', 150, 'Amazon', '592d67a5-4fc0-4745-a0b3-3a2ceec651b2'),
 ('9a52be5d-5d7c-4eb3-98a6-370872f922b4', 200, 'Walmart', '6ce6d63b-b5f1-4f4d-96d9-261f74146355'),
@@ -58,3 +57,34 @@ create table purchases (
 	cardID varchar(255) foreign key references creditCards(id)
 );
 
+INSERT INTO creditCards VALUES ('7608bb70-6565-4473-81e3-fe5db1049af8', 'Charlotte Thomas Card', 'Visa', 'Charlotte Thomas', '1353 7808 7775 5175', 8, 20, '308'),
+
+create or alter view CardsWithUsage as
+SELECT
+    cc.id,
+    cc.title,
+    cc.cardType,
+    cc.placeHolder,
+    cc.cardNumber,
+    cc.expiryMo,
+    cc.expiryYr,
+    cc.cvv,
+    COUNT(p.id) AS UsageCount  -- Count of related entries in 'purchases'
+FROM
+    creditCards cc
+LEFT JOIN
+    purchases p ON p.cardID = cc.id
+GROUP BY
+    cc.id,
+    cc.title,
+    cc.cardType,
+    cc.placeHolder,
+    cc.cardNumber,
+    cc.expiryMo,
+    cc.expiryYr,
+    cc.cvv;
+
+
+	select * from CardsWithUsage;
+	delete from creditCards
+	where id ='c0c4d4e1-69f8-41cc-9a98-6a1af74c1fe0'

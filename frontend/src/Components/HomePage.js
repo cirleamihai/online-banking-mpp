@@ -22,19 +22,10 @@ export default function HomePage() {
     const [localPurchases, setLocalPurchases] = useState([]);
     const [backendIsDown, setBackendIsDown] = useState(false);
     const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard];
-    const fetcherArgs2 = [API_GET_ALL_PURCHASES_URL, setLocalPurchases, 'purchases', Purchase];
 
     // Fetching the data from the API
     useEffect(() => {
-        console.log("Fetching data from the API");
-        const interval = setInterval(() => {
-            fetchAPIObjects(...fetcherArgs).then(r => {
-                fetchAPIObjects(...fetcherArgs2).then(r => {
-                });
-            });
-        }, 100);
-
-        return () => clearInterval(interval);
+        fetchAPIObjects(...fetcherArgs).then(r => {});
     }, []);
 
     useEffect(() => {
@@ -113,7 +104,6 @@ export default function HomePage() {
                     {
                         currentCards.length > 0 ? currentCards.map((creditCard) => {
                             const cardLink = '/view/card/' + creditCard.id;
-                            creditCard.checkUsageNumber(localPurchases); // loading the usage number
 
                             return (
                                 <tr key={creditCard.id}>

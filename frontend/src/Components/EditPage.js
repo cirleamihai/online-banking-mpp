@@ -2,6 +2,7 @@ import {NewCardForm} from "../Designs/cardTemplate.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import CreditCard from "../Model/card";
+import {repo} from "../LocalStorage/repository";
 
 const API_GET_URL = 'http://localhost:8000/api/v1/credit-cards';
 
@@ -16,6 +17,16 @@ export default function EditCard() {
     const [cvv, setCvv] = useState(creditCard ? creditCard.cvv : "");
     const [cardType, setCardType] = useState(creditCard ? creditCard.type : "");
 
+    if (!creditCard.isTruthy()) {
+        const localCreditCard = new CreditCard(repo.getCardById(cardId));
+        setCardNumber(localCreditCard.number);
+        setCardHolder(localCreditCard.placeHolder);
+        setExpiry(localCreditCard.stringifyExpirationDate());
+        setCvv(localCreditCard.cvv);
+        setCardType(localCreditCard.type);
+        setCreditCard(localCreditCard)
+    }
+
     useEffect(() => {
         fetch(API_GET_URL + `/${cardId}`)
             .then(response => response.json())
@@ -27,6 +38,8 @@ export default function EditCard() {
                 setCvv(localCreditCard.cvv);
                 setCardType(localCreditCard.type);
                 setCreditCard(localCreditCard)
+            }).catch((error) => {
+                // console.error('Error:', error);
             });
     }, []);
 
@@ -44,7 +57,8 @@ export default function EditCard() {
 
         console.log(JSON.stringify({card: creditCard}));
 
-        fetch(API_GET_URL + `/${cardId}`, {
+        function operation(API_GET_URL, cardId, creditCard) {
+            fetch(API_GET_URL + `/${cardId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,14 +70,17 @@ export default function EditCard() {
                 .catch((error) => {
                     console.error('Error:', error);
                 });
+        }
+        const fctArgs = [API_GET_URL, cardId, creditCard];
+        repo.updateCard(creditCard);
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+        if (repo.isServerOnline()) {
+            operation(...fctArgs);
+        } else {
+            repo.addOperation(operation, fctArgs);
         }
 
-        sleep(1).then(() => {
-            history('/');
-        });
+        history('/');
     }
 
     if (!creditCard) {

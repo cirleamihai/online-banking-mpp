@@ -8,7 +8,7 @@ import {repo} from "../LocalStorage/repository";
 
 const API_GET_ALL_CARDS_URL = 'http://localhost:8000/api/v1/credit-cards';
 
-const validate = (values) =>  {
+const validate = (values) => {
     const errors = {};
     const totalValue = Number(values.totalValue);
 
@@ -37,13 +37,26 @@ function AddPurchase() {
     const [errors, setErrors] = useState({});
     let history = useNavigate();
 
+    if (formData.cardID === '') {
+        if (localCards.length > 0) {
+            setFormData((prev) => ({
+                ...prev,
+                cardID: localCards[0].id,
+                cardNumber: localCards[0].number
+            }));
+        }
+    }
+
     useEffect(() => {
         const fetcherArgs = [API_GET_ALL_CARDS_URL, setLocalCards, "cards", CreditCard];
-        fetchAPIObjects(...fetcherArgs).then(() => {});
+        fetchAPIObjects(...fetcherArgs).then(() => {
+
+        });
+
     }, []);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -84,7 +97,13 @@ function AddPurchase() {
                 repo.addPurchase(new Purchase(formData));
             }
 
-            history('/purchases');
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            sleep(1).then(() => {
+                history('/purchases');
+            });
         } else {
             console.log("onError", validationErrors);
             setErrors(validationErrors);
@@ -124,7 +143,7 @@ function AddPurchase() {
                     </option>
                 ))}
             </select>
-            <input type="submit" />
+            <input type="submit"/>
         </form>
     );
 }

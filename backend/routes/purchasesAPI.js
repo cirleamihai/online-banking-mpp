@@ -9,38 +9,20 @@ router.get("/purchases", (req, res) => {
     res.json({purchases: purchases});
 });
 
-router.get("/purchases/:id", (req, res) => {
+router.get("/purchases/:id", async (req, res) => {
     if (!req.params.id) {
         res.status(400).json({error: "Purchase ID not provided."});
         return;
     }
 
-    const purchases = repo.getPurchases();
-    const purchase = purchases.find((purchase) => purchase.id === req.params.id);
-    if (purchase == null) {
+    const purchase = await repo.getPurchaseByID(req.params.id);
+    if (!purchase.isTruthy()) {
         res.status(404).json({error: "Purchase not found."});
         return;
     }
 
     res.json({purchase: purchase});
 });
-
-router.put("/purchases/:id", (req, res) => {
-    const purchases = repo.getPurchases();
-    const purchaseIndex = purchases.findIndex((purchase) => purchase.id === req.params.id);
-
-    if (purchaseIndex === -1) {
-        res.status(404).json({error: "Purchase not found."});
-        return;
-    }
-
-    const purchase = new Purchase(req.body.purchase);
-    database.updateData('purchases', purchases).then(() => {
-        res.json(`Successfully updated the purchase with ID: ${purchase.id}`);
-    });
-
-});
-
 
 // Add a new purchase
 router.post('/purchases', (req, res) => {
@@ -58,15 +40,14 @@ router.post('/purchases', (req, res) => {
 
 
 // Delete an existing purchase
-router.delete('/purchases/:id', (req, res) => {
-    const purchases = repo.getPurchases();
-    const purchaseIndex = purchases.findIndex((purchase) => purchase.id === req.params.id);
-    if (purchaseIndex === -1) {
+router.delete('/purchases/:id', async (req, res) => {
+    const purchases = await repo.getPurchaseByID(req.params.id);
+    if (!purchases.isTruthy()) {
         res.status(404).json({error: "Purchase not found."});
         return;
     }
 
-    database.deleteData('purchases', purchases[purchaseIndex]).then(() => {
+    database.deleteData('purchases', purchases, req.params.id).then(() => {
         res.status(204).send();
     });
 });
