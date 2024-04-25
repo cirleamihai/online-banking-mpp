@@ -8,38 +8,40 @@ import "../Designs/customs.css"
 import {sortCards} from "../CrudHandlers/dataSorting.js";
 import CreditCard from "../Model/card";
 import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
-import Purchase from "../Model/purchase";
-import {repo} from "../LocalStorage/repository";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
-const API_GET_ALL_PURCHASES_URL = 'http://localhost:8000/api/v1/purchases';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
 const API_DELETE_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_SOCKET_UPDATER = 'ws://localhost:8080';
 
 export default function HomePage() {
+    // states for API data
     const [localCards, setLocalCards] = useState([]);
-    const [localPurchases, setLocalPurchases] = useState([]);
     const [backendIsDown, setBackendIsDown] = useState(false);
-    const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard];
+
+    // States for pagination
+    const [requestedNewPage, setRequestedNewPage] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(50);
+
+
+    const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard, currentPage, itemsPerPage];
 
     // Fetching the data from the API
     useEffect(() => {
-        fetchAPIObjects(...fetcherArgs).then(r => {});
-    }, []);
+        fetchAPIObjects(...fetcherArgs).then();
+    }, [itemsPerPage, currentPage]);
 
     useEffect(() => {
         console.log("Checking the backend health");
-        checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
-        });
+        checkBackendHealth(API_HEALTH_CHECK, fetcherArgs, setBackendIsDown).then();
 
         const interval = setInterval(() => {
-            checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
-            });
+            checkBackendHealth(API_HEALTH_CHECK, fetcherArgs, setBackendIsDown).then();
         }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [itemsPerPage, currentPage]);
 
     useEffect(() => {
         const socket = new WebSocket(API_SOCKET_UPDATER);
@@ -49,8 +51,7 @@ export default function HomePage() {
                 // Fetch the updated data from the backend
                 console.log('Data updated, fetch new data here');
 
-                fetchAPIObjects(...fetcherArgs).then(r => {
-                });
+                fetchAPIObjects(...fetcherArgs).then();
             }
         });
 
@@ -58,25 +59,27 @@ export default function HomePage() {
         return () => socket.close();
     }, []);
 
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if (scrollTop + clientHeight >= scrollHeight - 5 && !requestedNewPage) {  // Adjust this value if needed
+                setCurrentPage(prevPage => prevPage + 1);
+                setRequestedNewPage(true);
+            } else if (requestedNewPage) {
+                setRequestedNewPage(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // navigator
     let navigate = useNavigate();
 
-    // sorting the cards
-    sortCards(localCards);
-
-    // States for pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const [cardsPerPage, setCardsPerPage] = useState(5);
-
     // Calculate the number of pages
-    const totalPages = Math.ceil(localCards.length / cardsPerPage);
-
-    // Get current cards
-    const indexOfLastCard = currentPage * cardsPerPage;
-    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    const currentCards = localCards.slice(indexOfFirstCard, indexOfLastCard);
-
-    // Change page
-    const changePage = (pageNumber) => setCurrentPage(pageNumber);
+    const totalPages = Math.ceil(localCards.length / itemsPerPage);
 
     return (
         <>
@@ -85,9 +88,20 @@ export default function HomePage() {
                     The backend server is currently offline. Please try again later.
                 </div>
             )}
+            <div className="d-flex justify-content-between control-section">
             <Link className="d-grip gap-2" to="/purchases">
                 <Button size="lg" className="btn btn-primary">View Purchases</Button>
             </Link>
+            <div className="dropdown-container">
+                <DropdownButton id="dropdown-item-button" title={`Items per page: ${itemsPerPage}`}>
+                    {[50, 100].map(number => (
+                        <Dropdown.Item key={number} as="button" onClick={() => setItemsPerPage(number)}>
+                            {number}
+                        </Dropdown.Item>
+                    ))}
+                </DropdownButton>
+            </div>
+            </div>
             <div style={{margin: "5rem"}}>
                 <Table striped bordered hover size="sm" className="cards-table-color custom-table-hover">
                     <thead>
@@ -102,7 +116,7 @@ export default function HomePage() {
                     </thead>
                     <tbody>
                     {
-                        currentCards.length > 0 ? currentCards.map((creditCard) => {
+                        localCards.length > 0 ? localCards.map((creditCard) => {
                             const cardLink = '/view/card/' + creditCard.id;
 
                             return (
@@ -135,32 +149,6 @@ export default function HomePage() {
                     <Button size="lg" className="submit-btn">Add Card</Button></Link>
                 <Link className="d-grip gap-2" to="/view/chart/">
                     <Button size="lg" className="submit-btn">View Chart</Button></Link>
-            </div>
-            <div className="d-flex justify-content-between control-section">
-                {/* Pagination container */}
-                <div className="pagination-container">
-                    <Pagination>
-                        {[...Array(totalPages).keys()].map(number => (
-                            <Pagination.Item key={number + 1} active={number + 1 === currentPage}
-                                             onClick={() => changePage(number + 1)}>
-                                {number + 1}
-                            </Pagination.Item>
-                        ))}
-                    </Pagination>
-                </div>
-
-                {/* Dropdown container */}
-                <div className="dropdown-container">
-                    <DropdownButton id="dropdown-item-button" title={`Items per page: ${cardsPerPage}`}>
-                        {[5, 10, 15].map(number => (
-                            <Dropdown.Item key={number} as="button" onClick={() => setCardsPerPage(number)}>
-                                {number}
-                            </Dropdown.Item>
-                        ))}
-                    </DropdownButton>
-                </div>
-
-
             </div>
         </>
     )

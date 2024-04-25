@@ -88,3 +88,8 @@ GROUP BY
 	select * from CardsWithUsage;
 	delete from creditCards
 	where id ='c0c4d4e1-69f8-41cc-9a98-6a1af74c1fe0'
+
+create or alter view purchasesCardNumberView as
+SELECT p.*, c.cardNumber FROM purchases p inner join creditCards c on p.cardID = c.id
+
+select * from purchasesCardNumberView

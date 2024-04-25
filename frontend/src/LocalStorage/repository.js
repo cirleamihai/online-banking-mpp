@@ -4,6 +4,8 @@ class repository {
     backendOnline = false;
     operationsQueue = [];
     changes = 0;
+    totalPages = 0;
+
 
     constructor() {
     }
@@ -78,13 +80,43 @@ class repository {
         return this;
     }
 
-    setObject(objectName, objects) {
-        if (objectName === 'cards') {
-            this.frontendCards = objects;
-        } else if (objectName === 'purchases') {
-            this.frontendPurchases = objects;
+    compareObjects(objectName, objects, currentPage) {
+        // trying to see if there are new objects, append them to the frontend objects
+        // otherwise, update the existing ones
+        if (currentPage > this.totalPages) {
+            this.addObject(objectName, objects);
+            this.totalPages++;
+            console.log('Total pages: ', this.totalPages);
+        } else {
+            this.setObject(objectName, objects);
         }
     }
+
+    addObject(objectName, objects) {
+        if (objectName === 'cards') {
+            this.frontendCards = [...this.frontendCards, ...objects];
+        } else if (objectName === 'purchases') {
+            this.frontendPurchases = [...this.frontendPurchases, ...objects];
+        }
+    }
+
+    setObject(objectName, objects) {
+        const feObjects = objectName === 'cards' ? this.frontendCards : this.frontendPurchases;
+        for (const object of objects) {
+            const index = feObjects.findIndex(o => o.id === object.id);
+            if (index === -1) {
+                feObjects.push(object);
+            } else {
+                feObjects[index] = object;
+            }
+        }
+
+        if (objectName === 'cards') {
+            this.frontendCards = [...feObjects];
+        } else if (objectName === 'purchases') {
+            this.frontendPurchases = [...feObjects];
+        }
+    };
 
     getObject(objectName: string) {
         if (objectName === 'cards') {

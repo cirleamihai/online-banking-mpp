@@ -63,4 +63,10 @@ export default class CreditCard {
         }
     }
 
+    isEqual(anotherCard) {
+        return this.id === anotherCard.id && this.title === anotherCard.title && this.type === anotherCard.type &&
+            this.number === anotherCard.number && this.placeHolder === anotherCard.placeHolder &&
+            this.expiryMo === anotherCard.expiryMo && this.expiryYr === anotherCard.expiryYr && this.cvv === anotherCard.cvv;
+    }
+
 }

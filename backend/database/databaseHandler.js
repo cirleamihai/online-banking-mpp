@@ -26,19 +26,21 @@ async function getConnection() {
     }
 }
 
-async function fetchData(table = 'creditCards') {
+async function fetchData(table = 'creditCards', offset, limit) {
     const pool = await getConnection();
     if (pool) {
         try {
-            if (table === 'purchases') {
-                const result = await pool.request()
-                    .query('SELECT p.*, c.cardNumber FROM purchases p inner join creditCards c on p.cardID = c.id');
-
-                return result.recordset;
+            let query = 'SELECT * FROM ' + table;
+            if (limit > 0) {
+                query += `
+                    ORDER BY id
+                    OFFSET ${offset} ROWS
+                    FETCH NEXT ${limit} ROWS ONLY
+                    `
             }
 
             const result = await pool.request()
-                .query('SELECT * FROM ' + table);
+                .query(query);
             return result.recordset;
         } catch (err) {
             // throw new Error('Error executing query:', err);

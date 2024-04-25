@@ -2,39 +2,30 @@ const database = require("../database/databaseHandler");
 const CreditCard = require("../models/cardModel");
 const Purchase = require("../models/purchasesModel");
 
-let creditCards = [];
-let purchases = [];
+async function loadData(offset, limit) {
+    const creditCardsDB = await database.fetchData('CardsWithUsage', offset, limit);
+    const purchasesDB = await database.fetchData('purchasesCardNumberView', offset, limit);
 
-async function loadData() {
-    const creditCardsDB = await database.fetchData('CardsWithUsage');
-    const purchasesDB = await database.fetchData('purchases');
-
-    creditCards = creditCardsDB.map((card) => {
+    const creditCards = creditCardsDB.map((card) => {
         const localCC = new CreditCard();
         localCC.loadFromSQLDatabase(card);
         return localCC
     });
-    purchases = purchasesDB.map((purchase) => {
+    const purchases = purchasesDB.map((purchase) => {
         const localPurchase = new Purchase();
         localPurchase.loadFromSQLDatabase(purchase);
         return localPurchase;
     });
+
+    return [creditCards, purchases];
 }
 
-function getCreditCards() {
-    loadData().then(() => {
-        // loaded data
-    });
-
-    return creditCards;
+async function getCreditCards(offset, limit) {
+    return (await loadData(offset, limit))[0];
 }
 
-function getPurchases() {
-    loadData().then(() => {
-        // loaded data
-    });
-
-    return purchases;
+async function getPurchases(offset, limit) {
+    return (await loadData(offset, limit))[1];
 }
 
 function getCreditCardByID(id) {

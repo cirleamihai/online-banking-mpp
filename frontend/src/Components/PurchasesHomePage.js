@@ -25,11 +25,11 @@ function PurchasesHomePage() {
     }, []);
 
     useEffect(() => {
-        checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
+        checkBackendHealth(API_HEALTH_CHECK, fetcherArgs, setBackendIsDown).then(r => {
         });
 
         const interval = setInterval(() => {
-            checkBackendHealth(API_HEALTH_CHECK, ...fetcherArgs, setBackendIsDown).then(r => {
+            checkBackendHealth(API_HEALTH_CHECK, fetcherArgs, setBackendIsDown).then(r => {
             });
         }, 5000);
 

@@ -32,6 +32,12 @@ class Purchase {
         return this.id;
     }
 
+    isEqual(purchase) {
+        return this.id === purchase.id && this.totalValue === purchase.totalValue &&
+            this.merchant === purchase.merchant && this.cardID === purchase.cardID &&
+            this.cardNumber === purchase.cardNumber;
+    }
+
 }
 
 export default Purchase;

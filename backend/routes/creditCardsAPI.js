@@ -4,8 +4,12 @@ const database = require("../database/databaseHandler");
 const router = express.Router();
 const repo = require("../repository/repository.js");
 
-router.get("/credit-cards", (req, res) => {
-    const creditCards = repo.getCreditCards();
+router.get("/credit-cards", async (req, res) => {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || -1;
+    const offset = (page - 1) * limit;
+
+    const creditCards = await repo.getCreditCards(offset, limit);
     res.json({cards: creditCards});
 });
 

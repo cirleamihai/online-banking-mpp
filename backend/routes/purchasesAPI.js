@@ -4,8 +4,12 @@ const Purchase = require("../models/purchasesModel.js");
 const database = require("../database/databaseHandler.js");
 const repo = require("../repository/repository.js");
 
-router.get("/purchases", (req, res) => {
-    const purchases = repo.getPurchases();
+router.get("/purchases", async (req, res) => {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || -1;
+    const offset = (page - 1) * limit;
+
+    const purchases = await repo.getPurchases(offset, limit);
     res.json({purchases: purchases});
 });
 

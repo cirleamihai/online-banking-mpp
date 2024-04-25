@@ -1,7 +1,13 @@
 import {repo} from '../LocalStorage/repository.js';
 
-export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model) {
+export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model,
+                                      page = NaN, ITEMS_PER_PAGE = NaN) {
     setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage first
+
+    // Setting the paginated API URL
+    if (page && ITEMS_PER_PAGE) {
+        apiUrl = apiUrl + `?page=${page}&limit=${ITEMS_PER_PAGE}`;
+    }
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -10,8 +16,8 @@ export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, M
             repo.executeOperations()
 
             if (repo.synchronize()) {
-                setLocalObjects(objects);
-                repo.setObject(jsonObjectName, objects); // save objects to local storage
+                repo.compareObjects(jsonObjectName, objects, page); // compare objects and update local storage
+                setLocalObjects(repo.getObject(jsonObjectName)); // get objects from local storage
             }
             // console.log(objects);
         })
@@ -21,7 +27,7 @@ export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, M
         });
 }
 
-export async function checkBackendHealth (apiHealthUrl, apiUrl, setLocalObjects, jsonObjectName, Model, setBackendIsDown) {
+export async function checkBackendHealth(apiHealthUrl, fetcherArgs, setBackendIsDown) {
     fetch(apiHealthUrl).then(response => {
         if (response.ok) {
             setBackendIsDown(false);
@@ -34,6 +40,6 @@ export async function checkBackendHealth (apiHealthUrl, apiUrl, setLocalObjects,
         // console.log(error);
         setBackendIsDown(true);
     }).finally(() => {
-        fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model);
+        fetchAPIObjects(...fetcherArgs);
     });
 }

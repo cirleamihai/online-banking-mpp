@@ -1030,13 +1030,13 @@ function generateRandomCreditCard() {
     return new CreditCard(card);
 }
 
-for (let j = 0; j < 50; ++j) {
+// for (let j = 0; j < 50; ++j) {
     const dataArr = [];
     for (let i = 0; i < 1000; ++i) {
         dataArr.push(generateRandomCreditCard());
     }
     addDataArray('creditCards', dataArr);
-}
+// }
 
 // Example usage
 module.exports = generateRandomCreditCard;
