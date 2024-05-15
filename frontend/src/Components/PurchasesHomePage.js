@@ -1,7 +1,7 @@
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Dropdown, DropdownButton, Pagination, Table} from "react-bootstrap";
-import {handleDelete} from "../CrudHandlers/delete";
-import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers";
+import {handleDelete} from "../Utils/delete";
+import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers";
 import "../Designs/buttons.css"
 import "../Designs/customs.css"
 import React, {useEffect, useState} from "react";

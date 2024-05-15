@@ -3,6 +3,7 @@ import { Pie } from 'react-chartjs-2';
 // Import the required components from Chart.js
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import CreditCard from "../Model/card";
+import {authFetch} from "../Utils/autoFetch";
 
 // Register the components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -34,7 +35,7 @@ const PieChart = () => {
     }, []);
 
     const fetchAllCards = async () => {
-        fetch(API_GET_ALL_URL)
+        authFetch(API_GET_ALL_URL)
             .then(response => response.json())
             .then(data => {
                 const cards = data.cards.map(card => new CreditCard(card));

@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import CreditCard from "../Model/card";
 import {repo} from "../LocalStorage/repository";
+import {authFetch} from "../Utils/autoFetch";
 
 const API_GET_URL = 'http://localhost:8000/api/v1/credit-cards';
 
@@ -28,7 +29,7 @@ export default function EditCard() {
     }
 
     useEffect(() => {
-        fetch(API_GET_URL + `/${cardId}`)
+        authFetch(API_GET_URL + `/${cardId}`)
             .then(response => response.json())
             .then(data => {
                 const localCreditCard = new CreditCard(data.card);
@@ -58,7 +59,7 @@ export default function EditCard() {
         console.log(JSON.stringify({card: creditCard}));
 
         function operation(API_GET_URL, cardId, creditCard) {
-            fetch(API_GET_URL + `/${cardId}`, {
+            authFetch(API_GET_URL + `/${cardId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

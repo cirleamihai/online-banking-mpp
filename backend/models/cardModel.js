@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
 
 class CreditCard {
     id;
@@ -10,21 +10,23 @@ class CreditCard {
     expiryYr;
     cvv;
     usageNumber;
+    userId;
 
     constructor(card) {
         if (!card) {
             return;
         }
 
-        card.id ? this.id = card.id: this.id = uuidv4();
-        card.title ? this.title = card.title : this.title = '';
-        card.type ? this.type = card.type : this.type = '';
-        card.number ? this.number = card.number : this.number = '';
-        card.placeHolder ? this.placeHolder = card.placeHolder : this.placeHolder = '';
-        card.expiryMo ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
-        card.expiryYr ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
-        card.cvv ? this.cvv = card.cvv : this.cvv = '';
-        card.usageNumber ? this.usageNumber = card.usageNumber : this.usageNumber = 0;
+        this.id = card.id || uuidv4();
+        this.title = card.title || '';
+        this.type = card.type || '';
+        this.number = card.number || '';
+        this.placeHolder = card.placeHolder || '';
+        this.expiryMo = card.expiryMo || 0;
+        this.expiryYr = card.expiryYr || 0;
+        this.cvv = card.cvv || '';
+        this.usageNumber = card.UsageCount || 0;
+        this.userId = card.userId || '';
     }
 
     loadFromSQLDatabase(card) {
@@ -37,6 +39,7 @@ class CreditCard {
         this.expiryYr = card.expiryYr;
         this.cvv = card.cvv;
         this.usageNumber = card.UsageCount;
+        this.userId = card.userId || '';
     }
 
     stringifyExpirationDate() {
@@ -63,7 +66,8 @@ class CreditCard {
     toAddSQLString() {
         // return an SQL string to insert the object into the database
         return "'" + this.id + "', '" + this.title + "', '" + this.type + "', '" + this.placeHolder +
-            "', '" + this.number + "', " + this.expiryMo + ", " + this.expiryYr + ", '" + this.cvv + "'";
+            "', '" + this.number + "', " + this.expiryMo + ", " + this.expiryYr + ", '" + this.cvv +
+            "'" + ", '" + this.userId + "'";
     }
 
     toUpdateSQLString() {

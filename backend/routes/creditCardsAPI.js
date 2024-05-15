@@ -4,25 +4,26 @@ const database = require("../database/databaseHandler");
 const router = express.Router();
 const repo = require("../repository/repository.js");
 
-router.get("/credit-cards", async (req, res) => {
+router.get("/", async (req, res) => {
+    const userId = req.user.id; // Access the user ID from the middleware
     const page = req.query.page || 1;
     const limit = req.query.limit || -1;
     const offset = (page - 1) * limit;
 
-    const creditCards = await repo.getCreditCards(offset, limit);
+    const creditCards = await repo.getUserCreditCards(userId, offset, limit);
     res.json({cards: creditCards});
 });
 
 // get a credit card by id
-router.get("/credit-cards/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     if (!req.params.id) {
         res.status(400).json({error: "Card ID not provided."});
         return;
     }
 
     const card = await repo.getCreditCardByID(req.params.id);
-    if (!card.isTruthy()) {
-        res.status(404).json({error: "Card not found."});
+    if (!card.isTruthy() || card.userId !== req.user.id) {
+        res.status(404).json({error: "Card not found or not authorized."});
         return;
     }
 
@@ -30,11 +31,11 @@ router.get("/credit-cards/:id", async (req, res) => {
 });
 
 // update a credit card
-router.put("/credit-cards/:id", async (req, res) => {
-    const creditCard = await repo.getCreditCardByID(req.params.id);
+router.put("/:id", async (req, res) => {
+    const card = await repo.getCreditCardByID(req.params.id);
 
-    if (!creditCard.isTruthy()) {
-        res.status(404).json({error: "Card not found."});
+    if (!card.isTruthy() || card.userId !== req.user.id) {
+        res.status(404).json({error: "Card not found or not authorized."});
         return;
     }
 
@@ -45,7 +46,7 @@ router.put("/credit-cards/:id", async (req, res) => {
 });
 
 // add a new card
-router.post('/credit-cards', (req, res) => {
+router.post('/', (req, res) => {
     const card = req.body.card;
     if (!card) {
         res.status(400).json({error: "Card details not provided."});
@@ -53,20 +54,22 @@ router.post('/credit-cards', (req, res) => {
     }
 
     const newCard = new CreditCard(card);
+    newCard.userId = req.user.id;  // Set the user ID to the current user
+
     database.addData('creditCards', newCard).then(() => {
         res.status(201).json(newCard);
     });
 });
 
 // Delete an existing card
-router.delete('/credit-cards/:id', async (req, res) => {
-    const creditCard = await repo.getCreditCardByID(req.params.id);
-    if (!creditCard.isTruthy()) {
-        res.status(404).json({error: "Card not found."});
+router.delete('/:id', async (req, res) => {
+    const card = await repo.getCreditCardByID(req.params.id);
+    if (!card.isTruthy() || card.userId !== req.user.id) {
+        res.status(404).json({error: "Card not found or not authorized."});
         return;
     }
 
-    database.deleteData('creditCards', creditCard, req.params.id).then(() => {
+    database.deleteData('creditCards', card, req.params.id).then(() => {
         res.status(204).send();
     });
 });

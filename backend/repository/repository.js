@@ -1,31 +1,25 @@
 const database = require("../database/databaseHandler");
 const CreditCard = require("../models/cardModel");
 const Purchase = require("../models/purchasesModel");
+const User = require("../models/userModel");
 
-async function loadData(offset, limit) {
-    const creditCardsDB = await database.fetchData('CardsWithUsage', offset, limit);
-    const purchasesDB = await database.fetchData('purchasesCardNumberView', offset, limit);
+async function getUserCreditCards(userId, offset, limit) {
+    const creditCardsDB =  await database.fetchUserData('getUserCards', userId, offset, limit);
 
-    const creditCards = creditCardsDB.map((card) => {
+    return creditCardsDB.map((card) => {
         const localCC = new CreditCard();
         localCC.loadFromSQLDatabase(card);
         return localCC
     });
-    const purchases = purchasesDB.map((purchase) => {
+}
+
+async function getUserPurchases(userId, offset, limit) {
+    const purchasesDB = await database.fetchUserData('getUserPurchases', userId, offset, limit);
+    return purchasesDB.map((purchase) => {
         const localPurchase = new Purchase();
         localPurchase.loadFromSQLDatabase(purchase);
         return localPurchase;
     });
-
-    return [creditCards, purchases];
-}
-
-async function getCreditCards(offset, limit) {
-    return (await loadData(offset, limit))[0];
-}
-
-async function getPurchases(offset, limit) {
-    return (await loadData(offset, limit))[1];
 }
 
 function getCreditCardByID(id) {
@@ -38,8 +32,8 @@ function getCreditCardByID(id) {
     });
 }
 
-function getPurchaseByID(id) {
-    return database.getObjectByID('purchases', id).then((purchase) => {
+function getPurchaseByID(purchaseId, userId) {
+    return database.getObjectByID('userPurchasesView', purchaseId, 'id', userId).then((purchase) => {
         const localPurchase = new Purchase();
         if (purchase[0]) {
             localPurchase.loadFromSQLDatabase(purchase[0]);
@@ -48,10 +42,20 @@ function getPurchaseByID(id) {
     });
 }
 
+function getUserByEmail(email) {
+    return database.getObjectByID('users', email, 'email').then((user) => {
+        const localUser = new User();
+        if (user[0]) {
+            localUser.loadFromSQLDatabase(user[0]);
+        }
+        return localUser;
+    });
+}
+
 module.exports = {
-    loadData,
-    getCreditCards,
-    getPurchases,
+    getUserCreditCards,
+    getUserPurchases,
     getCreditCardByID,
-    getPurchaseByID
+    getPurchaseByID,
+    getUserByEmail
 };

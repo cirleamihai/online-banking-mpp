@@ -1,4 +1,6 @@
 import {repo} from '../LocalStorage/repository.js';
+import {authFetch} from "./autoFetch";
+
 
 export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, Model,
                                       page = NaN, ITEMS_PER_PAGE = NaN) {
@@ -9,7 +11,7 @@ export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, M
         apiUrl = apiUrl + `?page=${page}&limit=${ITEMS_PER_PAGE}`;
     }
 
-    fetch(apiUrl)
+    authFetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             const objects = data[jsonObjectName].map(obj => new Model(obj));
@@ -28,7 +30,7 @@ export async function fetchAPIObjects(apiUrl, setLocalObjects, jsonObjectName, M
 }
 
 export async function checkBackendHealth(apiHealthUrl, fetcherArgs, setBackendIsDown) {
-    fetch(apiHealthUrl).then(response => {
+    authFetch(apiHealthUrl).then(response => {
         if (response.ok) {
             setBackendIsDown(false);
             repo.executeOperations().serverOnline(); // set server status to online

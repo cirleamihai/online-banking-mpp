@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {handleDelete} from '../CrudHandlers/delete.js';
+import {handleDelete} from '../Utils/delete.js';
 import {Button, Table, Pagination, Dropdown, DropdownButton} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link, useNavigate} from "react-router-dom";
 import "../Designs/buttons.css"
 import "../Designs/customs.css"
-import {sortCards} from "../CrudHandlers/dataSorting.js";
+import {sortCards} from "../Utils/dataSorting.js";
 import CreditCard from "../Model/card";
-import {checkBackendHealth, fetchAPIObjects} from "../CrudHandlers/backendHandlers.js";
+import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers.js";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
@@ -60,20 +60,33 @@ export default function HomePage() {
     }, []);
 
 
+    // Debounce function
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
     useEffect(() => {
         const handleScroll = () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if (scrollTop + clientHeight >= scrollHeight - 5 && !requestedNewPage) {  // Adjust this value if needed
+            if (scrollTop + clientHeight >= scrollHeight - 5) {
                 setCurrentPage(prevPage => prevPage + 1);
-                setRequestedNewPage(true);
-            } else if (requestedNewPage) {
-                setRequestedNewPage(false);
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        const debouncedHandleScroll = debounce(handleScroll, 100);  // Debounce time in milliseconds
+
+        window.addEventListener('scroll', debouncedHandleScroll);
+        return () => window.removeEventListener('scroll', debouncedHandleScroll);
     }, []);
+
 
     // navigator
     let navigate = useNavigate();

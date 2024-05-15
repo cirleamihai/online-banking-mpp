@@ -11,13 +11,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Including the Authentication routes
+// Checking the token for all routes starting with /api/v1/
+
 // Including the routes
 const creditCardsRouter = require('./routes/creditCardsAPI.js');
 const purchasesRouter = require('./routes/purchasesAPI.js');
+const authentication = require('./routes/authenticationAPI.js');
 
 // Using the routes
-app.use('/api/v1/', creditCardsRouter);
-app.use('/api/v1/', purchasesRouter);
+app.use('/api/v1/auth', authentication.router);
+app.use('/api/v1/credit-cards', authentication.authMiddleware, creditCardsRouter);
+app.use('/api/v1/purchases', authentication.authMiddleware, purchasesRouter);
 
 function sendSocketUpdates() {
     // Notify all connected clients that new data is available
@@ -29,10 +34,6 @@ function sendSocketUpdates() {
 }
 // GOLD TASK FOR ASSIGNMENT 2
 // setInterval(sendSocketUpdates, 10000);
-
-repo.loadData().then(() => {
-    console.log('Data loaded successfully');
-});
 
 // WebSocket connection handler
 wss.on('connection', function connection(ws) {

@@ -1,3 +1,5 @@
+import User from '../Model/user.js';
+
 class repository {
     frontendCards = [];
     frontendPurchases = [];
@@ -5,6 +7,8 @@ class repository {
     operationsQueue = [];
     changes = 0;
     totalPages = 0;
+    loginToken = '';
+    user = new User();
 
 
     constructor() {
@@ -19,6 +23,22 @@ class repository {
         }
 
         return true;
+    }
+
+    setToken(token) {
+        this.loginToken = token;
+    }
+
+    setUser(user) {
+        this.user = new User(user);
+    }
+
+    getUser() {
+        return this.user;
+    }
+
+    getToken() {
+        return this.loginToken;
     }
 
     addCard(card) {

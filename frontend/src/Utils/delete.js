@@ -1,4 +1,5 @@
 import {repo} from "../LocalStorage/repository";
+import {authFetch} from "./autoFetch";
 
 export function handleDelete(deleteAPI, object, fetchAPIObjects, fetcherArgs, path = "/") {
     const objName = object.objectName;
@@ -9,7 +10,7 @@ export function handleDelete(deleteAPI, object, fetchAPIObjects, fetcherArgs, pa
     }
 
     function operation(deleteAPI, object, fetchAPIObjects, fetcherArgs) {
-        fetch(`${deleteAPI}/${object.id}`, {
+        authFetch(`${deleteAPI}/${object.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

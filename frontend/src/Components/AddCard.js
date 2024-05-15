@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {v4 as uuidv4} from 'uuid';
 import {repo} from "../LocalStorage/repository";
+import {authFetch} from "../Utils/autoFetch";
 
 const API_ADD_URL = "http://localhost:8000/api/v1/credit-cards";
 
@@ -43,7 +44,7 @@ export default function AddCard() {
         function operation(API_ADD_URL, creditCard)
         {
             // Add the credit card to the local storage
-            fetch(API_ADD_URL, {
+            authFetch(API_ADD_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

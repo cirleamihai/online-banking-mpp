@@ -1,20 +1,24 @@
+const {v4: uuidv4} = require('uuid');
+
 class Purchase {
     id;
     totalValue;
     merchant;
     cardID;
     cardNumber;
+    userId;
 
     constructor(purchases) {
         if (!purchases) {
             return;
         }
 
-        purchases.id ? this.id = purchases.id : this.id = '';
-        purchases.totalValue ? this.totalValue = purchases.totalValue : this.totalValue = 0;
-        purchases.merchant ? this.merchant = purchases.merchant : this.merchant = '';
-        purchases.cardID ? this.cardID = purchases.cardID : this.cardID = '';
-        purchases.cardNumber ? this.cardNumber = purchases.cardNumber : this.cardNumber = '';
+        this.id = purchases.id || uuidv4();
+        this.totalValue = purchases.totalValue || 0;
+        this.merchant = purchases.merchant || '';
+        this.cardID = purchases.cardID || '';
+        this.cardNumber = purchases.cardNumber || '';
+        this.userId = purchases.userId || '';
     }
 
     loadFromSQLDatabase(purchases) {
@@ -23,6 +27,7 @@ class Purchase {
         this.merchant = purchases.merchant;
         this.cardID = purchases.cardID;
         this.cardNumber = purchases.cardNumber;
+        this.userId = purchases.userId || '';
     }
 
     toAddSQLString() {

@@ -4,22 +4,23 @@ const Purchase = require("../models/purchasesModel.js");
 const database = require("../database/databaseHandler.js");
 const repo = require("../repository/repository.js");
 
-router.get("/purchases", async (req, res) => {
+router.get("/", async (req, res) => {
+    const userId = req.user.id; // Access the user ID from the middleware
     const page = req.query.page || 1;
     const limit = req.query.limit || -1;
     const offset = (page - 1) * limit;
 
-    const purchases = await repo.getPurchases(offset, limit);
+    const purchases = await repo.getUserPurchases(userId, offset, limit);
     res.json({purchases: purchases});
 });
 
-router.get("/purchases/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     if (!req.params.id) {
         res.status(400).json({error: "Purchase ID not provided."});
         return;
     }
 
-    const purchase = await repo.getPurchaseByID(req.params.id);
+    const purchase = await repo.getPurchaseByID(req.params.id, req.user.id);
     if (!purchase.isTruthy()) {
         res.status(404).json({error: "Purchase not found."});
         return;
@@ -29,7 +30,7 @@ router.get("/purchases/:id", async (req, res) => {
 });
 
 // Add a new purchase
-router.post('/purchases', (req, res) => {
+router.post('/', (req, res) => {
     const purchase = req.body.purchase;
     if (!purchase) {
         res.status(400).json({error: "Purchase details not provided."});
@@ -44,8 +45,8 @@ router.post('/purchases', (req, res) => {
 
 
 // Delete an existing purchase
-router.delete('/purchases/:id', async (req, res) => {
-    const purchases = await repo.getPurchaseByID(req.params.id);
+router.delete('/:id', async (req, res) => {
+    const purchases = await repo.getPurchaseByID(req.params.id, req.user.id);
     if (!purchases.isTruthy()) {
         res.status(404).json({error: "Purchase not found."});
         return;

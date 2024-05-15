@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import "../Designs/form.css";
-import {fetchAPIObjects} from "../CrudHandlers/backendHandlers";
+import {fetchAPIObjects} from "../Utils/backendHandlers";
 import CreditCard from "../Model/card";
 import Purchase from "../Model/purchase";
 import {useNavigate} from "react-router-dom";
 import {repo} from "../LocalStorage/repository";
+import {authFetch} from "../Utils/autoFetch";
 
 const API_GET_ALL_CARDS_URL = 'http://localhost:8000/api/v1/credit-cards';
 
@@ -74,7 +75,7 @@ function AddPurchase() {
                 }
             }
             const operation = (formData) => {
-                fetch('http://localhost:8000/api/v1/purchases/', {
+                authFetch('http://localhost:8000/api/v1/purchases/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
