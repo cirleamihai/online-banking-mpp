@@ -28,7 +28,7 @@ class User {
     }
 
     toAddSQLString() {
-        return `'${this.id}', '${this.username}', '${this.email}', '${this.passwordHash}'`;
+        return `'${this.id}', '${this.username}', '${this.passwordHash}', '${this.email}'`;
     }
 
     isTruthy() {

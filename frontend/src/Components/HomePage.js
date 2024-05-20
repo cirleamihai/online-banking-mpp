@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {handleDelete} from '../Utils/delete.js';
 import {Button, Table, Pagination, Dropdown, DropdownButton} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,6 +8,8 @@ import "../Designs/customs.css"
 import {sortCards} from "../Utils/dataSorting.js";
 import CreditCard from "../Model/card";
 import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers.js";
+import {AuthContext} from "../Context/AuthContext";
+import {repo} from "../LocalStorage/repository";
 
 const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
 const API_HEALTH_CHECK = 'http://localhost:8000/health';
@@ -23,9 +25,22 @@ export default function HomePage() {
     const [requestedNewPage, setRequestedNewPage] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(50);
+    const [logoutError, setLogoutError] = useState('');
 
+    // Auth Context
+    const {logout} = useContext(AuthContext);
 
     const fetcherArgs = [API_GET_ALL_URL, setLocalCards, 'cards', CreditCard, currentPage, itemsPerPage];
+
+    const handleLogOut = async () => {
+        try {
+            await logout();
+            repo.clearToken();
+            navigate('/login');
+        } catch (error) {
+            setLogoutError(error);
+        }
+    }
 
     // Fetching the data from the API
     useEffect(() => {
@@ -75,7 +90,7 @@ export default function HomePage() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            const {scrollTop, scrollHeight, clientHeight} = document.documentElement;
             if (scrollTop + clientHeight >= scrollHeight - 5) {
                 setCurrentPage(prevPage => prevPage + 1);
             }
@@ -101,19 +116,27 @@ export default function HomePage() {
                     The backend server is currently offline. Please try again later.
                 </div>
             )}
+            {logoutError && (
+                <div style={{backgroundColor: 'red', color: 'white', padding: '10px', textAlign: 'center'}}>
+                    {logoutError}
+                </div>
+            )}
             <div className="d-flex justify-content-between control-section">
-            <Link className="d-grip gap-2" to="/purchases">
-                <Button size="lg" className="btn btn-primary">View Purchases</Button>
-            </Link>
-            <div className="dropdown-container">
-                <DropdownButton id="dropdown-item-button" title={`Items per page: ${itemsPerPage}`}>
-                    {[50, 100].map(number => (
-                        <Dropdown.Item key={number} as="button" onClick={() => setItemsPerPage(number)}>
-                            {number}
-                        </Dropdown.Item>
-                    ))}
-                </DropdownButton>
-            </div>
+                <Link className="d-grip gap-2" to="/login">
+                    <Button size="lg" className="btn btn-danger" onClick={handleLogOut}>Logout</Button>
+                </Link>
+                <Link className="d-grip gap-2" to="/purchases">
+                    <Button size="lg" className="btn btn-primary">View Purchases</Button>
+                </Link>
+                <div className="dropdown-container">
+                    <DropdownButton id="dropdown-item-button" title={`Items per page: ${itemsPerPage}`}>
+                        {[50, 100].map(number => (
+                            <Dropdown.Item key={number} as="button" onClick={() => setItemsPerPage(number)}>
+                                {number}
+                            </Dropdown.Item>
+                        ))}
+                    </DropdownButton>
+                </div>
             </div>
             <div style={{margin: "5rem"}}>
                 <Table striped bordered hover size="sm" className="cards-table-color custom-table-hover">

@@ -12,6 +12,7 @@ class repository {
 
 
     constructor() {
+        this.loadToken();
     }
 
     synchronize() {
@@ -25,7 +26,12 @@ class repository {
         return true;
     }
 
+    loadToken() {
+        this.loginToken = localStorage.getItem('token');
+    }
+
     setToken(token) {
+        localStorage.setItem('token', token);
         this.loginToken = token;
     }
 
@@ -39,6 +45,11 @@ class repository {
 
     getToken() {
         return this.loginToken;
+    }
+
+    clearToken() {
+        this.loginToken = '';
+        localStorage.removeItem('token');
     }
 
     addCard(card) {

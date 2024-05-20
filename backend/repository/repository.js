@@ -43,7 +43,7 @@ function getPurchaseByID(purchaseId, userId) {
 }
 
 function getUserByEmail(email) {
-    return database.getObjectByID('users', email, 'email').then((user) => {
+    return database.getObjectByID('users', email, `username = '${email}' or email`).then((user) => {
         const localUser = new User();
         if (user[0]) {
             localUser.loadFromSQLDatabase(user[0]);

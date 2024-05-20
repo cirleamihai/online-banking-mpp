@@ -106,6 +106,8 @@ GROUP BY
 create or alter view userPurchasesView as
 SELECT p.*, c.cardNumber, c.userId FROM purchases p inner join creditCards c on p.cardID = c.id;
 
+select * from userPurchasesView
+
 
 -- VIEW with userID attached
 create or alter view usersCards as
@@ -123,7 +125,7 @@ create or alter procedure getUserCards
     @offset INT = 0  -- Default value for offset
 as
 begin
-    select c.title, c.cardType, c.placeHolder, c.cardNumber, c.expiryMo, c.expiryYr, c.cvv, c.UsageCount
+    select c.id, c.title, c.cardType, c.placeHolder, c.cardNumber, c.expiryMo, c.expiryYr, c.cvv, c.UsageCount
     from UserCardsUsageView c
     where c.userId = @id
 	order by c.userId
@@ -133,6 +135,9 @@ end;
 
 exec getUserCards '4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad'
 
+select * from users
+
+
 -- procedure to get all the user Purchases based on an ID
 create or alter procedure getUserPurchases
 	@id varchar(255),
@@ -140,7 +145,7 @@ create or alter procedure getUserPurchases
     @offset INT = 0  -- Default value for offset
 as 
 begin
-	select p.totalValue, p.merchant, p.cardID, p.cardNumber
+	select p.id, p.totalValue, p.merchant, p.cardID, p.cardNumber
 	from userPurchasesView p
 	where p.userId = @id
 	order by p.userId

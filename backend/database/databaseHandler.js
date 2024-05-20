@@ -76,6 +76,7 @@ async function getObjectByID(table = 'creditCards', parameter_value, parameter =
             if (userId) {
                 query += ` AND userId = '${userId}'`;
             }
+
             const result = await pool.request()
                 .query(query);
             return result.recordset;
