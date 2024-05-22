@@ -137,6 +137,7 @@ exec getUserCards '4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad'
 
 select * from users
 
+delete from users where id='ffdb4a5a-72f7-4ad1-9892-67392f096505'
 
 -- procedure to get all the user Purchases based on an ID
 create or alter procedure getUserPurchases

@@ -1,7 +1,21 @@
-const sql = require("mssql/msnodesqlv8");
+require('dotenv').config();
+const sql = require('mssql');
 
+const USERNAME = process.env.AWS_USERNAME;
+const PASSWORD = process.env.AWS_PASSWORD;
+const SERVER = process.env.AWS_SERVER;
+const DBNAME = process.env.AWS_DATABASE;
+
+// Configuration object
 const config = {
-    connectionString: 'Driver={ODBC Driver 17 for SQL Server};Server=DESKTOP-OAKT4PO;Database=online_banking;Trusted_Connection=yes;TrustServerCertificate=yes'
+    user: USERNAME,
+    password: PASSWORD,
+    server: SERVER,
+    database: DBNAME,
+    options: {
+        encrypt: true, // Use encryption
+        trustServerCertificate: true // Change to true for local dev / self-signed certs
+    }
 };
 
 function badInput(data) {
@@ -21,7 +35,7 @@ async function getConnection() {
         // console.log('Connected to SQL Server successfully!');
         return pool;
     } catch (err) {
-        // console.error('Failed to connect to SQL Server:', err);
+        console.error('Failed to connect to SQL Server:', err);
         throw new Error('Failed to connect to SQL Server');
     }
 }
@@ -166,6 +180,8 @@ async function updateData(table = 'creditCards', data) {
         }
     }
 }
+
+getConnection();
 
 module.exports = {
     fetchGeneralData,
