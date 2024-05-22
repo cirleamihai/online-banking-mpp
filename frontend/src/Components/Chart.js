@@ -8,8 +8,8 @@ import {authFetch} from "../Utils/autoFetch";
 // Register the components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
-const API_SOCKET_UPDATER = 'ws://localhost:8080';
+const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}api/v1/credit-cards`;
+const API_SOCKET_UPDATER = process.env.REACT_APP_WS_URL;
 const PieChart = () => {
 
     const [localCards, setLocalCards] = useState([]);

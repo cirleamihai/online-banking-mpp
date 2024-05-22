@@ -2,8 +2,8 @@
 import React, {createContext, useState, useEffect} from 'react';
 import {repo} from '../LocalStorage/repository.js';
 
-const LOGIN_API = 'http://localhost:8000/api/v1/auth/login';
-const REGISTER_API = 'http://localhost:8000/api/v1/auth/register';
+const LOGIN_API = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/login`;
+const REGISTER_API = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/register`;
 
 function jwt_decode (token) {
     const base64Url = token.split('.')[1];

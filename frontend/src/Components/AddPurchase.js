@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {repo} from "../LocalStorage/repository";
 import {authFetch} from "../Utils/autoFetch";
 
-const API_GET_ALL_CARDS_URL = 'http://localhost:8000/api/v1/credit-cards';
+const API_GET_ALL_CARDS_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 
 const validate = (values) => {
     const errors = {};
@@ -75,7 +75,7 @@ function AddPurchase() {
                 }
             }
             const operation = (formData) => {
-                authFetch('http://localhost:8000/api/v1/purchases/', {
+                authFetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/purchases/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

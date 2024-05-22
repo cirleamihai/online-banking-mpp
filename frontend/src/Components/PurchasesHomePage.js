@@ -7,10 +7,10 @@ import "../Designs/customs.css"
 import React, {useEffect, useState} from "react";
 import Purchase from "../Model/purchase.js";
 
-const API_GET_ALL_URL = 'http://localhost:8000/api/v1/purchases';
-const API_HEALTH_CHECK = 'http://localhost:8000/health';
+const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/purchases`;
+const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;
 const API_DELETE_URL = API_GET_ALL_URL;
-const API_SOCKET_UPDATER = 'ws://localhost:8080';
+const API_SOCKET_UPDATER = process.env.REACT_APP_WS_URL;
 
 function PurchasesHomePage() {
     const [localPurchases, setLocalPurchases] = useState([]);

@@ -5,7 +5,7 @@ import CreditCard from "../Model/card";
 import {repo} from "../LocalStorage/repository";
 import {authFetch} from "../Utils/autoFetch";
 
-const API_GET_URL = 'http://localhost:8000/api/v1/credit-cards';
+const API_GET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 
 export default function EditCard() {
     const {cardId} = useParams();

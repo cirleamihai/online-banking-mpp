@@ -11,10 +11,10 @@ import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers.js";
 import {AuthContext} from "../Context/AuthContext";
 import {repo} from "../LocalStorage/repository";
 
-const API_GET_ALL_URL = 'http://localhost:8000/api/v1/credit-cards';
-const API_HEALTH_CHECK = 'http://localhost:8000/health';
-const API_DELETE_URL = 'http://localhost:8000/api/v1/credit-cards';
-const API_SOCKET_UPDATER = 'ws://localhost:8080';
+const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
+const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;
+const API_DELETE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
+const API_SOCKET_UPDATER = process.env.REACT_APP_BACKEND_WS_URL;
 
 export default function HomePage() {
     // states for API data

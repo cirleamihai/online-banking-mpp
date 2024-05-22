@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 import {repo} from "../LocalStorage/repository";
 import {authFetch} from "../Utils/autoFetch";
 
-const API_ADD_URL = "http://localhost:8000/api/v1/credit-cards";
+const API_ADD_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 
 export default function AddCard() {
     let creditCard = undefined; // Create a new credit card object
