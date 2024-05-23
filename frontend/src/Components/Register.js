@@ -2,6 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../Context/AuthContext';
 import {useNavigate} from "react-router-dom";
+import {repo} from "../LocalStorage/repository.js";
 
 const Register = () => {
     const { register } = useContext(AuthContext);
@@ -15,7 +16,8 @@ const Register = () => {
         e.preventDefault();
         try {
             await register(username, email, password);
-            navigate('/login'); // Redirect to login page after successful registration
+            navigate('/'); // Redirect to login page after successful registration
+            repo.clearLocalStorage();
             // Optionally, redirect to login page or auto-login
         } catch (error) {
             setError(error.message);

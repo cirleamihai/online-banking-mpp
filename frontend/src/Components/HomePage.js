@@ -14,7 +14,7 @@ import {repo} from "../LocalStorage/repository";
 const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;
 const API_DELETE_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
-const API_SOCKET_UPDATER = process.env.REACT_APP_BACKEND_WS_URL;
+const API_SOCKET_UPDATER = process.env.REACT_APP_WS_URL;
 
 export default function HomePage() {
     // states for API data
@@ -35,7 +35,7 @@ export default function HomePage() {
     const handleLogOut = async () => {
         try {
             await logout();
-            repo.clearToken();
+            repo.clearLocalStorage();
             navigate('/login');
         } catch (error) {
             setLogoutError(error);

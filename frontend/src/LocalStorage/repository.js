@@ -52,6 +52,13 @@ class repository {
         localStorage.removeItem('token');
     }
 
+    clearLocalStorage() {
+        this.clearToken();
+        this.frontendCards = [];
+        this.frontendPurchases = [];
+        this.user = new User();
+    }
+
     addCard(card) {
         this.frontendCards = [...this.frontendCards, card];
         this.changes++;
