@@ -2,7 +2,7 @@ import {fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import App from './App';
 import AddCard from "./Components/AddCard";
-import EditCard from "./Components/EditPage";
+import EditCard from "./Components/EditCard";
 import ViewCard from "./Components/ViewCard";
 import {localCards} from "./LocalStorage/localCards";
 import CreditCard from "./Model/card";

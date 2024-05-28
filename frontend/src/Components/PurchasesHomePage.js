@@ -6,6 +6,7 @@ import "../Designs/buttons.css"
 import "../Designs/customs.css"
 import React, {useEffect, useState} from "react";
 import Purchase from "../Model/purchase.js";
+import {repo} from "../LocalStorage/repository.js";
 
 const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/purchases`;
 const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;
@@ -78,7 +79,7 @@ function PurchasesHomePage() {
                     The backend server is currently offline. Please try again later.
                 </div>
             )}
-            <Link className="d-grip gap-2" to="/">
+            <Link className="d-grip gap-2" to="/cards">
                 <Button size="lg" className="btn btn-primary">View Cards</Button>
             </Link>
             <div style={{margin: "5rem"}}>
@@ -103,9 +104,14 @@ function PurchasesHomePage() {
                                     <td>{purchase.totalValue}</td>
                                     <td onClick={() => navigate(cardLink)}
                                         style={{cursor: 'pointer'}}>{purchase.cardLast4Digits()}</td>
-                                    <td className="text-center"><Button
-                                        onClick={() => handleDelete(API_DELETE_URL, purchase,
-                                            fetchAPIObjects, fetcherArgs)}>Delete</Button>
+                                    <td className="text-center">
+                                        {
+                                            repo.getCrudPerms() ? (
+                                                <Button
+                                                    onClick={() => handleDelete(API_DELETE_URL, purchase,
+                                                        fetchAPIObjects, fetcherArgs)}>Delete</Button>
+                                            ) : null
+                                        }
                                     </td>
                                 </tr>
                             )
@@ -114,10 +120,12 @@ function PurchasesHomePage() {
                         </tr>
                     }</tbody>
                 </Table>
-                <div className="text-center">
-                    <Link className="d-grip gap-2" to="/purchase/add">
-                        <Button size="lg" className="submit-btn">Add Purchase</Button></Link>
-                </div>
+                {repo.getCrudPerms() &&
+                    <div className="text-center">
+                        <Link className="d-grip gap-2" to="/purchase/add">
+                            <Button size="lg" className="submit-btn">Add Purchase</Button></Link>
+                    </div>
+                }
             </div>
             <div className="d-flex justify-content-between control-section">
                 {/* Pagination container */}

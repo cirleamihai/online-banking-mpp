@@ -56,6 +56,10 @@ class repository {
         return !this.user.isUser();
     }
 
+    getAdminAccess() {
+        return this.user.isAdmin();
+    }
+
     getToken() {
         return this.loginToken;
     }

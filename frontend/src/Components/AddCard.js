@@ -67,7 +67,7 @@ export default function AddCard() {
         }
 
         sleep(1).then(() => {
-            history('/');
+            history('/cards');
         });
     }
 

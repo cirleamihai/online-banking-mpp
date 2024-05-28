@@ -81,7 +81,7 @@ export default function EditCard() {
             repo.addOperation(operation, fctArgs);
         }
 
-        history('/');
+        history('/cards');
     }
 
     if (!creditCard) {
