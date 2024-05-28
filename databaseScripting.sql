@@ -10,7 +10,8 @@ create table users (
     id varchar(255) primary key,
     username varchar(255),
     passwordHash varchar(255),
-    email varchar(255)
+    email varchar(255),
+	accessRole varchar(255) check (accessRole in ('user', 'admin', 'manager'))
 );
 
 create table creditCards (
@@ -32,16 +33,19 @@ create table purchases (
 	merchant varchar(255),
 	cardID varchar(255) foreign key references creditCards(id)
 );
+
 delete from purchases;
 delete from creditCards;
+delete from users;
 
 drop table purchases;
 drop table creditCards;
+drop table users;
 
 
-insert into users values ('4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad', 'admin', '$2a$10$oKWIEyW1Wz6rWRCCi93TVefKqF4PpxetQABAtYyrmWAptaCv49Ia6', 'admin@gmail.com'),
-    ('858a71de-86db-48fa-8d18-767b63c9dfc0', 'cirlea mihai', '$2a$10$yCqvkFooftmiZxs40GmvoOVQ43OThsnp0xjX/2KYXSzQClgLXyBCm', 'alexcirlea@gmail.com'),
-    ('cf1f173e-7341-4568-be24-ad1401e06749', 'alice johnson', '$2a$10$qiWh9/cL.RV7mrpP0pz9uuyRNbUcpvxWJcU8JzY8aFrFQQ8eOr4Ja', 'alicejohnson@gmail.com');
+insert into users values ('4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad', 'admin', '$2a$10$oKWIEyW1Wz6rWRCCi93TVefKqF4PpxetQABAtYyrmWAptaCv49Ia6', 'admin@gmail.com', 'admin'),
+    ('858a71de-86db-48fa-8d18-767b63c9dfc0', 'cirlea mihai', '$2a$10$yCqvkFooftmiZxs40GmvoOVQ43OThsnp0xjX/2KYXSzQClgLXyBCm', 'alexcirlea@gmail.com', 'user'),
+    ('cf1f173e-7341-4568-be24-ad1401e06749', 'alice johnson', '$2a$10$qiWh9/cL.RV7mrpP0pz9uuyRNbUcpvxWJcU8JzY8aFrFQQ8eOr4Ja', 'alicejohnson@gmail.com', 'manager');
 
 INSERT INTO creditCards (id, title, cardType, placeHolder, cardNumber, expiryMo, expiryYr, cvv, userId) VALUES
 ('273eb572-de9f-4b27-8d74-8f9a95643c53', 'MyCard', 'Visa', 'Emanuel Rodrigo', '1234 5678 9101 1121', 1, 23, '745', '4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad'),

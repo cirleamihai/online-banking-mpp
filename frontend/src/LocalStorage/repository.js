@@ -13,6 +13,7 @@ class repository {
 
     constructor() {
         this.loadToken();
+        this.loadUser();
     }
 
     synchronize() {
@@ -30,6 +31,13 @@ class repository {
         this.loginToken = localStorage.getItem('token');
     }
 
+    loadUser() {
+        const user = localStorage.getItem('user');
+        if (user) {
+            this.user = new User(JSON.parse(user));
+        }
+    }
+
     setToken(token) {
         localStorage.setItem('token', token);
         this.loginToken = token;
@@ -37,10 +45,15 @@ class repository {
 
     setUser(user) {
         this.user = new User(user);
+        localStorage.setItem('user', JSON.stringify(user));
     }
 
     getUser() {
         return this.user;
+    }
+
+    getCrudPerms() {
+        return !this.user.isUser();
     }
 
     getToken() {
@@ -52,11 +65,16 @@ class repository {
         localStorage.removeItem('token');
     }
 
+    clearUser() {
+        this.user = new User();
+        localStorage.removeItem('user');
+    }
+
     clearLocalStorage() {
         this.clearToken();
+        this.clearUser();
         this.frontendCards = [];
         this.frontendPurchases = [];
-        this.user = new User();
     }
 
     addCard(card) {

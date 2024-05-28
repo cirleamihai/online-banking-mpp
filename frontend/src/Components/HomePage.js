@@ -106,6 +106,8 @@ export default function HomePage() {
     // navigator
     let navigate = useNavigate();
 
+    console.log(repo.getUser());
+
     // Calculate the number of pages
     const totalPages = Math.ceil(localCards.length / itemsPerPage);
 
@@ -166,13 +168,26 @@ export default function HomePage() {
                                     <td onClick={() => navigate(cardLink)}
                                         style={{cursor: 'pointer'}}>{creditCard.last4Digits()}</td>
                                     <td>{creditCard.usageNumber}</td>
-                                    <td><Link to={"/edit/card/" + creditCard.id}><Button
-                                    >Edit</Button></Link> &nbsp;
-                                        <Button
-                                            onClick={() => {
-                                                handleDelete(API_DELETE_URL, creditCard,
-                                                    fetchAPIObjects, fetcherArgs);
-                                            }}>Delete</Button>
+                                    <td>
+                                        {
+                                            repo.getCrudPerms() ? (
+                                                <>
+                                                    <Link to={"/edit/card/" + creditCard.id}>
+                                                        <Button>Edit</Button>
+                                                    </Link>
+                                                    &nbsp;
+                                                    <Button
+                                                        onClick={() => {
+                                                            handleDelete(API_DELETE_URL, creditCard, fetchAPIObjects, fetcherArgs);
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <td>No Perms</td>
+                                            )
+                                        }
                                     </td>
                                 </tr>
                             )

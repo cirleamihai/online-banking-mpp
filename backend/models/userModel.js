@@ -2,6 +2,11 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 
 class User {
+    id;
+    username;
+    email;
+    passwordHash;
+
     constructor(user) {
         if (!user) {
             return;
@@ -10,6 +15,7 @@ class User {
         this.username = user.username || '';
         this.email = user.email || '';
         this.passwordHash = user.passwordHash || '';
+        this.role = user.role || 'user';
     }
 
     loadFromSQLDatabase(user) {
@@ -17,6 +23,7 @@ class User {
         this.username = user.username;
         this.email = user.email;
         this.passwordHash = user.passwordHash;
+        this.role = user.accessRole;
     }
 
     async setPassword(password) {
@@ -33,6 +40,18 @@ class User {
 
     isTruthy() {
         return this.id && this.username && this.email && this.passwordHash;
+    }
+
+    isAdmin() {
+        return this.role === 'admin';
+    }
+
+    isUser() {
+        return this.role === 'user';
+    }
+
+    isManager() {
+        return this.role === 'manager';
     }
 }
 
