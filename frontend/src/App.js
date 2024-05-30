@@ -15,6 +15,8 @@ import Register from "./Components/Register";
 import CrudProtectedRoute from "./Components/CrudPermsRoute";
 import CardsHomePage from "./Components/CardsHomePage";
 import ControlPanel from "./Components/ControlPanel";
+import AddUser from "./Components/AddUser";
+import EditUser from "./Components/EditUser";
 
 
 function App() {
@@ -27,13 +29,16 @@ function App() {
                         <Route path="/register" element={<PrivateRoute element={<Register />} route={"/"} loginStatus={true}/>} />
                         <Route path="/" element={<PrivateRoute element={<HomePage />} />} />
                         <Route path="/cards" element={<PrivateRoute element={<CardsHomePage />} />} />
-                        <Route path="/edit/card/:cardId" element={<CrudProtectedRoute element={<EditCard />} path={"/cards"} />} />
-                        <Route path="/view/card/:cardId" element={<PrivateRoute element={<ViewCard />} />} />
+                        <Route path="/card/edit/:cardId" element={<CrudProtectedRoute element={<EditCard />} path={"/cards"} />} />
+                        <Route path="/card/view/:cardId" element={<PrivateRoute element={<ViewCard />} />} />
                         <Route path="/card/add" element={<CrudProtectedRoute element={<AddCard />} path={"/cards"} />} />
-                        <Route path="/view/chart" element={<PrivateRoute element={<PieChart />} />} />
+                        <Route path="/chart/view" element={<PrivateRoute element={<PieChart />} />} />
                         <Route path="/purchases" element={<PrivateRoute element={<PurchasesHomePage />} />} />
                         <Route path="/purchase/add" element={<CrudProtectedRoute element={<AddPurchase />} path={"/purchases"}/>} />
                         <Route path="/admin" element={<PrivateRoute element={<ControlPanel/>} path="/" controlPanel={true}/>} />
+                        <Route path="/admin/user/add" element={<PrivateRoute element={<AddUser/>} path="/" controlPanel={true}/>} />
+                        <Route path="/admin/user/edit/:userId" element={<PrivateRoute element={<EditUser/>} path="/" controlPanel={true}/>} />
+
                         <Route path="*" element={<h1>Page not found</h1>} />
 
                     </Routes>

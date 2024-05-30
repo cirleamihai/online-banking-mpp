@@ -3,6 +3,7 @@ import User from '../Model/user.js';
 class repository {
     frontendCards = [];
     frontendPurchases = [];
+    frontendUsers = [];
     backendOnline = false;
     operationsQueue = [];
     changes = 0;
@@ -52,6 +53,10 @@ class repository {
         return this.user;
     }
 
+    getUserId() {
+        return this.user.getId();
+    }
+
     getCrudPerms() {
         return !this.user.isUser();
     }
@@ -91,6 +96,21 @@ class repository {
         this.changes++;
     }
 
+    addUser(user) {
+        this.frontendUsers = [...this.frontendUsers, user];
+        this.changes++;
+    }
+
+    updateUser(user) {
+        this.frontendUsers = this.frontendUsers.map(u => {
+            if (u.id === user.id) {
+                return user;
+            }
+            return u;
+        });
+        this.changes++;
+    }
+
     updateCard(card) {
         this.frontendCards = this.frontendCards.map(c => {
             if (c.id === card.id) {
@@ -111,6 +131,10 @@ class repository {
 
     isServerOnline() {
         return this.backendOnline;
+    }
+
+    getUserById(id) {
+        return this.frontendUsers.find(u => u.id === id);
     }
 
     getCardById(id) {
@@ -157,11 +181,21 @@ class repository {
             this.frontendCards = [...this.frontendCards, ...objects];
         } else if (objectName === 'purchases') {
             this.frontendPurchases = [...this.frontendPurchases, ...objects];
+        } else if (objectName === 'users') {
+            this.frontendUsers = [...this.frontendUsers, ...objects];
         }
     }
 
     setObject(objectName, objects) {
-        const feObjects = objectName === 'cards' ? this.frontendCards : this.frontendPurchases;
+        let feObjects;
+        if (objectName === 'cards') {
+            feObjects = this.frontendCards;
+        } else if (objectName === 'purchases') {
+            feObjects = this.frontendPurchases;
+        } else if (objectName === 'users') {
+            feObjects = this.frontendUsers;
+        }
+
         for (const object of objects) {
             const index = feObjects.findIndex(o => o.id === object.id);
             if (index === -1) {
@@ -175,6 +209,8 @@ class repository {
             this.frontendCards = [...feObjects];
         } else if (objectName === 'purchases') {
             this.frontendPurchases = [...feObjects];
+        } else if (objectName === 'users') {
+            this.frontendUsers = [...feObjects];
         }
     };
 
@@ -183,6 +219,8 @@ class repository {
             return this.frontendCards;
         } else if (objectName === 'purchases') {
             return this.frontendPurchases;
+        } else if (objectName === 'users') {
+            return this.frontendUsers;
         }
     }
 
@@ -191,6 +229,8 @@ class repository {
             return this.frontendPurchases;
         } else if (object.objectName === 'Credit Card') {
             return this.frontendCards;
+        } else if (object.objectName === 'User') {
+            return this.frontendUsers;
         }
     }
 
@@ -206,6 +246,12 @@ class repository {
         } else if (object.objectName === 'Credit Card') {
             this.frontendCards = this.frontendCards.filter(c => c.id !== object.id);
             this.frontendPurchases = this.frontendPurchases.filter(p => p.cardID !== object.id);
+        } else if (object.objectName === 'User') {
+            this.frontendUsers = this.frontendUsers.filter(u => u.id !== object.id);
+            // normally we would have to also delete the purchases and cards of the user,
+            // but we get the user's purchases and cards from the server once we log in,
+            // so we don't have to do anything
+
         }
         this.changes++;
     }

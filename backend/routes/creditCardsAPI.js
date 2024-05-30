@@ -69,7 +69,7 @@ router.delete('/:id', async (req, res) => {
         return;
     }
 
-    database.deleteData('creditCards', card, req.params.id).then(() => {
+    database.deleteDataProcedure('deleteCreditCard', card.id).then(() => {
         res.status(204).send();
     });
 });

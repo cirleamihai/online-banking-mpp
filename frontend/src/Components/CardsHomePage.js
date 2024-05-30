@@ -155,7 +155,7 @@ export default function CardsHomePage() {
                     <tbody>
                     {
                         localCards.length > 0 ? localCards.map((creditCard) => {
-                            const cardLink = '/view/card/' + creditCard.id;
+                            const cardLink = '/card/view/' + creditCard.id;
 
                             return (
                                 <tr key={creditCard.id}>
@@ -172,7 +172,7 @@ export default function CardsHomePage() {
                                         {
                                             repo.getCrudPerms() ? (
                                                 <>
-                                                    <Link to={"/edit/card/" + creditCard.id}>
+                                                    <Link to={"/card/edit/" + creditCard.id}>
                                                         <Button>Edit</Button>
                                                     </Link>
                                                     &nbsp;

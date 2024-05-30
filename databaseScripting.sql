@@ -159,3 +159,91 @@ begin
 end;
 
 exec getUserPurchases '4544e0eb-0ac1-4dee-bbd1-d53d3c6f4fad'
+
+
+create or alter procedure checkUserAdmin
+	@adminID varchar (255)
+as begin
+	declare @role varchar(255);
+	select @role = accessRole from users where id = @adminID;
+
+	if @role = 'admin'
+	begin
+		select * from users where id = @adminID;
+	end
+	else
+	begin
+		-- Return access denied message
+        RAISERROR('Access Denied', 16, 1);
+	end
+
+end
+
+-- procedure to get all the users if the given ID comes from an ADMIN
+create or alter procedure getUsers
+as begin
+	select id, email, username, accessRole from users where accessRole != 'admin'
+end;
+
+exec getUsers
+select * from users
+exec deleteUser '0b6f03e0-ad4f-4993-b10d-9a1867908e2c'
+
+
+-- Delete the Purchases
+CREATE OR ALTER PROCEDURE deletePurchase
+    @purchaseId VARCHAR(255)
+AS
+BEGIN
+    -- Check if the purchase exists
+    IF EXISTS (SELECT 1 FROM purchases WHERE id = @purchaseId)
+    BEGIN
+        -- Delete the purchase
+        DELETE FROM purchases WHERE id = @purchaseId;
+    END
+    ELSE
+    BEGIN
+        RAISERROR('Purchase not found', 16, 1);
+    END
+END;
+
+-- Delete a Credit Card
+CREATE OR ALTER PROCEDURE deleteCreditCard
+    @cardId VARCHAR(255)
+AS
+BEGIN
+    -- Check if the credit card exists
+    IF EXISTS (SELECT 1 FROM creditCards WHERE id = @cardId)
+    BEGIN
+        -- Delete associated purchases first due to foreign key constraint
+        DELETE FROM purchases WHERE cardID = @cardId;
+        -- Delete the credit card
+        DELETE FROM creditCards WHERE id = @cardId;
+    END
+    ELSE
+    BEGIN
+        RAISERROR('Credit Card not found', 16, 1);
+    END
+END;
+
+-- delete a User
+CREATE OR ALTER PROCEDURE deleteUser
+    @userId VARCHAR(255)
+AS
+BEGIN
+    -- Check if the user exists
+    IF EXISTS (SELECT 1 FROM users WHERE id = @userId)
+    BEGIN
+        -- Delete associated purchases and credit cards first due to foreign key constraint
+        DELETE FROM purchases WHERE cardID IN (SELECT id FROM creditCards WHERE userId = @userId);
+        DELETE FROM creditCards WHERE userId = @userId;
+        -- Delete the user
+        DELETE FROM users WHERE id = @userId;
+    END
+    ELSE
+    BEGIN
+        RAISERROR('User not found', 16, 1);
+    END
+END;
+
+

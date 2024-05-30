@@ -52,10 +52,45 @@ function getUserByEmail(email) {
     });
 }
 
+function getUserByID(userID) {
+    return database.getObjectByID('users', userID).then((user) => {
+        const localUser = new User();
+        if (user[0]) {
+            localUser.loadFromSQLDatabase(user[0]);
+        }
+        return localUser;
+    });
+}
+
+function getUsers() {
+    // works only if the accessID is a valid admin ID
+    return database.executeProcedure('getUsers').then((users) => {
+        if (!users) {
+            return []
+        }
+
+        return users.map((user) => {
+            const localUser = new User();
+            localUser.loadFromSQLDatabase(user);
+            return localUser;
+        });
+    });
+}
+getUsers();
+
+function checkAdmin(adminID) {
+    return database.fetchUserData('checkUserAdmin', adminID).then((result) => {
+        return result ? true : false;
+    });
+}
+
 module.exports = {
     getUserCreditCards,
     getUserPurchases,
     getCreditCardByID,
     getPurchaseByID,
-    getUserByEmail
+    getUserByEmail,
+    getUsers,
+    getUserByID,
+    checkAdmin
 };

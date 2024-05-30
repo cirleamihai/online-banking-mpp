@@ -7,5 +7,12 @@ export const authFetch = (url, options = {}) => {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
     };
+
+    if (repo.getAdminAccess()) {
+        options.headers = {
+            ...options.headers,
+            'admin-id': repo.getUserId(),
+        }
+    }
     return fetch(url, options);
 };

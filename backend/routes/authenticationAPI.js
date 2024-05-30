@@ -36,7 +36,9 @@ router.post('/login', async (req, res) => {
     }
 
     const user = await repo.getUserByEmail(email) // Assuming email is unique
-    if (!user.isTruthy() || !await user.validatePassword(password)) {
+    const validPassword = await user.validatePassword(password);
+    console.log(validPassword)
+    if (!user.isTruthy() || !validPassword) {
         return res.status(401).json({error: 'Invalid email or password'});
     }
 
@@ -67,7 +69,26 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
+const adminMiddleware = async (req, res, next) => {
+    const adminID = req.headers['admin-id'];
+    if (!adminID) {
+        return res.status(401).json({error: 'No admin ID provided'});
+    }
+
+    try {
+        if (await repo.checkAdmin(adminID)) {
+            next();
+        } else {
+            return res.status(403).json({error: 'Unauthorized access'});
+        }
+    } catch (err) {
+        return res.status(401).json({error: 'Invalid admin ID'});
+    }
+}
+
+
 module.exports = {
     router,
-    authMiddleware
+    authMiddleware,
+    adminMiddleware
 }

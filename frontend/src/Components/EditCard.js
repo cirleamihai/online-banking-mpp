@@ -24,9 +24,9 @@ export default function EditCard() {
         const localCreditCard = new CreditCard(repo.getCardById(cardId));
         setCardNumber(localCreditCard.number);
         setCardHolder(localCreditCard.placeHolder);
+        setCardType(localCreditCard.type);
         setExpiry(localCreditCard.stringifyExpirationDate());
         setCvv(localCreditCard.cvv);
-        setCardType(localCreditCard.type);
         setCreditCard(localCreditCard)
     }
 

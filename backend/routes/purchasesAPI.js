@@ -52,7 +52,7 @@ router.delete('/:id', async (req, res) => {
         return;
     }
 
-    database.deleteData('purchases', purchases, req.params.id).then(() => {
+    database.deleteDataProcedure('deletePurchase', purchases.id).then(() => {
         res.status(204).send();
     });
 });

@@ -76,6 +76,23 @@ async function fetchUserData(procedure = 'getUserCards', userId, offset, limit) 
                 .query(query);
             return result.recordset;
         } catch (err) {
+            if (err.message.includes('Access Denied')) {
+                console.log('Access Denied');
+            } else {
+                console.log('Error executing query:', err);
+            }
+        }
+    }
+}
+
+async function executeProcedure(procedure = 'getUsers') {
+    const pool = await getConnection();
+    if (pool) {
+        try {
+            const result = await pool.request()
+                .execute(procedure);
+            return result.recordset;
+        } catch (err) {
             // throw new Error('Error executing query:', err);
             console.log('Error executing query:', err);
         }
@@ -130,13 +147,30 @@ async function deleteData(table = 'creditCards', data, id) {
     }
 }
 
+async function deleteDataProcedure(procedure = 'deleteUser', id) {
+    const pool = await getConnection();
+    if (pool) {
+        try {
+            const query = 'EXEC ' + procedure + " '" + id + "'";
+            const result = await pool.request()
+                .query(query);
+            console.log(result.rowsAffected);
+        } catch (err) {
+            // throw new Error('Error executing query:', err);
+            console.log('Error executing query:', err);
+        }
+    }
+
+}
+
 async function addData(table = 'creditCards', data) {
     const pool = await getConnection();
     if (pool) {
         const dataStr = data.toAddSQLString();
         try {
+            const query = 'INSERT INTO ' + table + ' VALUES (' + dataStr + ')';
             const result = await pool.request()
-                .query('INSERT INTO ' + table + ' VALUES (' + dataStr + ')');
+                .query(query);
             console.log(result.rowsAffected);
         } catch (err) {
             // throw new Error('Error executing query:', err);
@@ -181,12 +215,12 @@ async function updateData(table = 'creditCards', data) {
     }
 }
 
-getConnection();
-
 module.exports = {
     fetchGeneralData,
     fetchUserData,
+    executeProcedure,
     deleteData,
+    deleteDataProcedure,
     addData,
     addDataArray,
     getObjectByID,

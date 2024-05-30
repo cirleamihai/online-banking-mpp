@@ -46,7 +46,7 @@ export default class CreditCard {
     }
 
     isTruthy() {
-        return this.number && this.expiryMo && this.expiryYr && this.cvv;
+        return this.number && this.expiryMo && this.expiryYr && this.cvv && this.type && this.placeHolder;
     }
 
     purchaseOptionDisplayer() {

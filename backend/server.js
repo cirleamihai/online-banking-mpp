@@ -18,9 +18,11 @@ app.use(express.json());
 const creditCardsRouter = require('./routes/creditCardsAPI.js');
 const purchasesRouter = require('./routes/purchasesAPI.js');
 const authentication = require('./routes/authenticationAPI.js');
+const usersRouter = require('./routes/usersAPI.js');
 
 // Using the routes
 app.use('/api/v1/auth', authentication.router);
+app.use('/api/v1/users', authentication.adminMiddleware, usersRouter);
 app.use('/api/v1/credit-cards', authentication.authMiddleware, creditCardsRouter);
 app.use('/api/v1/purchases', authentication.authMiddleware, purchasesRouter);
 
