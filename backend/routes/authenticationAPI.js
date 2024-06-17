@@ -36,9 +36,7 @@ router.post('/login', async (req, res) => {
     }
 
     const user = await repo.getUserByEmail(email) // Assuming email is unique
-    const validPassword = await user.validatePassword(password);
-    console.log(validPassword)
-    if (!user.isTruthy() || !validPassword) {
+    if (!user.isTruthy() || ! await user.validatePassword(password)) {
         return res.status(401).json({error: 'Invalid email or password'});
     }
 
