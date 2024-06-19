@@ -1,15 +1,15 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {handleDelete} from '../Utils/delete.js';
+import {handleDelete} from '../../Utils/delete.js';
 import {Button, Table, Pagination, Dropdown, DropdownButton} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link, useNavigate} from "react-router-dom";
-import "../Designs/buttons.css"
-import "../Designs/customs.css"
-import {sortCards} from "../Utils/dataSorting.js";
-import CreditCard from "../Model/card";
-import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers.js";
-import {AuthContext} from "../Context/AuthContext";
-import {repo} from "../LocalStorage/repository";
+import "../../Designs/buttons.css"
+import "../../Designs/customs.css"
+import {sortCards} from "../../Utils/dataSorting.js";
+import CreditCard from "../../Model/card";
+import {checkBackendHealth, fetchAPIObjects} from "../../Utils/backendHandlers.js";
+import {AuthContext} from "../../Context/AuthContext";
+import {repo} from "../../LocalStorage/repository";
 
 const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import "../Designs/form.css";
-import {fetchAPIObjects} from "../Utils/backendHandlers";
-import CreditCard from "../Model/card";
-import Purchase from "../Model/purchase";
+import "../../Designs/form.css";
+import {fetchAPIObjects} from "../../Utils/backendHandlers";
+import CreditCard from "../../Model/card";
+import Purchase from "../../Model/purchase";
 import {useNavigate} from "react-router-dom";
-import {repo} from "../LocalStorage/repository";
-import {authFetch} from "../Utils/autoFetch";
+import {repo} from "../../LocalStorage/repository";
+import {authFetch} from "../../Utils/autoFetch";
 
 const API_GET_ALL_CARDS_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 

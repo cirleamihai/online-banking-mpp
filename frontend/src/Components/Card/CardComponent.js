@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import CreditCard from "../Model/card";
+import CreditCard from "../../Model/card";
 
 const validateCVV = (cvv) => {
     // Remove non-digit characters

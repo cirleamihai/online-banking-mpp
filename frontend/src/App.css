@@ -21,7 +21,17 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #ffffff;
+}
+
+.Auth-header{
+  background-color: #282c34;
+  min-height: 100vh;
+  background-image: url("./Files/Media/background_banking.webp");
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
 }
 
 .App-link {

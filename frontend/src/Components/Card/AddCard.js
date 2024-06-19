@@ -1,9 +1,9 @@
-import CreditCard from "../Model/card";
+import CreditCard from "../../Model/card";
 import {useNavigate} from "react-router-dom";
-import {repo} from "../LocalStorage/repository";
-import {authFetch} from "../Utils/autoFetch";
+import {repo} from "../../LocalStorage/repository";
+import {authFetch} from "../../Utils/autoFetch";
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
-import '../Designs/cardDesign.css'
+import '../../Designs/cardDesign.css'
 import {CardComponent} from "./CardComponent";
 
 const API_ADD_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;

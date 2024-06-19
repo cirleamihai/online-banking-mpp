@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import {repo} from "../LocalStorage/repository.js";
-import CardsHomePage from "./CardsHomePage";
+import CardsHomePage from "./Card/CardsHomePage";
 import PrivateRoute from "./PrivateRoute";
 
 const CrudProtectedRoute = ({ element, path = "/" }) => {

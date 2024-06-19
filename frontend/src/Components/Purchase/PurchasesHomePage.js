@@ -1,12 +1,12 @@
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Dropdown, DropdownButton, Pagination, Table} from "react-bootstrap";
-import {handleDelete} from "../Utils/delete";
-import {checkBackendHealth, fetchAPIObjects} from "../Utils/backendHandlers";
-import "../Designs/buttons.css"
-import "../Designs/customs.css"
+import {handleDelete} from "../../Utils/delete";
+import {checkBackendHealth, fetchAPIObjects} from "../../Utils/backendHandlers";
+import "../../Designs/buttons.css"
+import "../../Designs/customs.css"
 import React, {useEffect, useState} from "react";
-import Purchase from "../Model/purchase.js";
-import {repo} from "../LocalStorage/repository.js";
+import Purchase from "../../Model/purchase.js";
+import {repo} from "../../LocalStorage/repository.js";
 
 const API_GET_ALL_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/purchases`;
 const API_HEALTH_CHECK = `${process.env.REACT_APP_BACKEND_URL}/health`;

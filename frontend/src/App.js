@@ -1,32 +1,43 @@
-import logo from './logo.svg';
 import './App.css';
 import HomePage from "./Components/HomePage.js";
-import EditCard from "./Components/EditCard.js";
-import {AddCard, PaymentForm} from "./Components/AddCard.js";
-import PieChart from "./Components/Chart.js";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import ViewCard from "./Components/ViewCard";
-import PurchasesHomePage from "./Components/PurchasesHomePage";
-import AddPurchase from "./Components/AddPurchase";
+import EditCard from "./Components/Card/EditCard.js";
+import {AddCard} from "./Components/Card/AddCard.js";
+import PieChart from "./Components/Card/Chart.js";
+import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
+import ViewCard from "./Components/Card/ViewCard";
+import PurchasesHomePage from "./Components/Purchase/PurchasesHomePage";
+import AddPurchase from "./Components/Purchase/AddPurchase";
 import PrivateRoute from "./Components/PrivateRoute";
 import {AuthProvider} from "./Context/AuthContext";
-import Login from "./Components/Login";
-import Register from "./Components/Register";
 import CrudProtectedRoute from "./Components/CrudPermsRoute";
-import CardsHomePage from "./Components/CardsHomePage";
+import CardsHomePage from "./Components/Card/CardsHomePage";
 import ControlPanel from "./Components/ControlPanel";
-import AddUser from "./Components/AddUser";
-import EditUser from "./Components/EditUser";
+import AddUser from "./Components/User/AddUser";
+import EditUser from "./Components/User/EditUser";
+import AuthenticationForm from "./Components/Authentication/AuthForm";
+
 
 
 function App() {
     return (
         <AuthProvider>
-            <div className="App-header">
-                <Router>
+            <Router>
+                <MainContent />
+            </Router>
+        </AuthProvider>
+    );
+}
+
+function MainContent() {
+    const location = useLocation();
+
+    // Determine the class to apply based on the current path
+    const headerClass = location.pathname === '/login' ? 'Auth-header' : 'App-header';
+
+    return (
+        <div className={headerClass}>
                     <Routes>
-                        <Route path="/login" element={<PrivateRoute element={<Login />} route={"/"} loginStatus={true}/>}/>
-                        <Route path="/register" element={<PrivateRoute element={<Register />} route={"/"} loginStatus={true}/>} />
+                        <Route path="/login" element={<PrivateRoute element={<AuthenticationForm />} route={"/"} loginStatus={true}/>}/>
                         <Route path="/" element={<PrivateRoute element={<HomePage />} />} />
                         <Route path="/cards" element={<PrivateRoute element={<CardsHomePage />} />} />
                         <Route path="/card/edit/:cardId" element={<CrudProtectedRoute element={<EditCard />} path={"/cards"} />} />
@@ -40,11 +51,8 @@ function App() {
                         <Route path="/admin/user/edit/:userId" element={<PrivateRoute element={<EditUser/>} path="/" controlPanel={true}/>} />
 
                         <Route path="*" element={<h1>Page not found</h1>} />
-
                     </Routes>
-                </Router>
-            </div>
-        </AuthProvider>
+        </div>
     );
 }
 

@@ -1,29 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
-import "../Designs/form.css";
-import {repo} from "../LocalStorage/repository";
-import {authFetch} from "../Utils/autoFetch";
-import User from "../Model/user";
+import "../../Designs/form.css";
+import {useNavigate} from "react-router-dom";
+import {repo} from "../../LocalStorage/repository";
+import {authFetch} from "../../Utils/autoFetch";
+import User from "../../Model/user";
 
 const URL_ADD_DATA = `${process.env.REACT_APP_BACKEND_URL}/api/v1/users`
 
-export default function EditUser() {
-    const navigate = useNavigate();
-    const {userId} = useParams()
-    const localUser = repo.getUserById(userId);
-    const [username, setUsername] = useState(localUser.username);
-    const [email, setEmail] = useState(localUser.email);
-    const [password, setPassword] = useState(localUser.password);
-    const [role, setRole] = useState(localUser.role);
+export default function AddUser() {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('user');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const user = new User({username, email, password, role});
-        user.id = userId;
-
-        const response = await authFetch(URL_ADD_DATA + `/${userId}`, {
-            method: 'PUT',
+        const response = await authFetch(URL_ADD_DATA, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -31,10 +27,12 @@ export default function EditUser() {
         });
         if (response.ok) {
             const data = await response.json();
-            repo.updateUser(user);
+            if (!user.isAdmin()) {
+                repo.addUser(user);
+            }
             navigate('/admin');
         } else {
-            setError('Something went wrong');
+            setError('Failed to register');
         }
     };
 

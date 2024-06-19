@@ -1,9 +1,9 @@
-import {viewCard} from "../Designs/cardTemplate.tsx";
+import {viewCard} from "../../Designs/cardTemplate.tsx";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import CreditCard from "../Model/card";
-import {repo} from "../LocalStorage/repository";
-import {authFetch} from "../Utils/autoFetch";
+import CreditCard from "../../Model/card";
+import {repo} from "../../LocalStorage/repository";
+import {authFetch} from "../../Utils/autoFetch";
 import {CardComponent} from "./CardComponent";
 
 const API_GET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;

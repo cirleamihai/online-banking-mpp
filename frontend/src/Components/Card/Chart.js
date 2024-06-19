@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { Pie } from 'react-chartjs-2';
 // Import the required components from Chart.js
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import CreditCard from "../Model/card";
-import {authFetch} from "../Utils/autoFetch";
+import CreditCard from "../../Model/card";
+import {authFetch} from "../../Utils/autoFetch";
 
 // Register the components
 ChartJS.register(ArcElement, Tooltip, Legend);
