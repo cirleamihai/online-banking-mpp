@@ -1,30 +1,43 @@
 import {v4 as uuidv4} from 'uuid';
 
 export default class CreditCard {
-    id: string;
-    title: string;
-    type: string;
-    number: string;
-    placeHolder: string;
-    expiryMo: number;
-    expiryYr: number;
-    cvv: string;
+    id: string = '';
+    title: string = '';
+    type: string = '';
+    number: string = '';
+    placeHolder: string = '';
+    expiryMo: number = 0;
+    expiryYr: number = 0;
+    cvv: string = '';
     objectName: string = 'Credit Card';
     usageNumber: number = 0;
 
     constructor(card) {
-        card ? this.id = card.id : this.id = uuidv4();
-        card ? this.title = card.title : this.title = '';
-        card ? this.type = card.type : this.type = '';
-        card ? this.number = card.number : this.number = '';
-        card ? this.placeHolder = card.placeHolder : this.placeHolder = '';
-        card ? this.expiryMo = card.expiryMo : this.expiryMo = 0;
-        card ? this.expiryYr = card.expiryYr : this.expiryYr = 0;
-        card ? this.cvv = card.cvv : this.cvv = '';
-        card ? this.usageNumber = card.usageNumber : this.usageNumber = 0;
+        if (!card) return;
+
+        this.id = card.id || uuidv4();
+        this.title = card.title || '';
+        this.type = card.type || '';
+        this.number = card.number || '';
+        this.placeHolder = card.placeHolder || '';
+        this.expiryMo = card.expiryMo || 0;
+        this.expiryYr = card.expiryYr || 0;
+        this.cvv = card.cvv || '';
+
+        if (card.expiryDate) {
+            this.setExpirationDate(card.expiryDate);
+        }
     }
 
+    expiryDate() {
+        if (!this.expiryMo || !this.expiryYr) return '';
+        let mo = this.expiryMo, yr = this.expiryYr;
+        let mo_str = mo.toString();
+        if (mo < 10) mo_str = `0${mo}`;
+        return mo_str + yr.toString();
+    }
     stringifyExpirationDate() {
+        if (!this.expiryMo || !this.expiryYr) return '00/00';
         let mo = this.expiryMo, yr = this.expiryYr;
         let mo_str = mo.toString();
         if (mo < 10) mo_str = `0${mo}`;

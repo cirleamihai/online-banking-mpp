@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import HomePage from "./Components/HomePage.js";
 import EditCard from "./Components/EditCard.js";
-import AddCard from "./Components/AddCard.js";
+import {AddCard, PaymentForm} from "./Components/AddCard.js";
 import PieChart from "./Components/Chart.js";
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ViewCard from "./Components/ViewCard";

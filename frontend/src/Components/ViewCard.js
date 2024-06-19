@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import CreditCard from "../Model/card";
 import {repo} from "../LocalStorage/repository";
 import {authFetch} from "../Utils/autoFetch";
+import {CardComponent} from "./CardComponent";
 
 const API_GET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 
@@ -13,7 +14,10 @@ export default function ViewCard() {
     const [creditCard, setCreditCard] = useState(new CreditCard());
 
     if (!creditCard.isTruthy()) {
-        setCreditCard(repo.getCardById(cardId));
+        const card = repo.getCardById(cardId);
+        if (card) {
+            setCreditCard(card);
+        }
     }
 
     useEffect(() => {
@@ -29,5 +33,6 @@ export default function ViewCard() {
         return <h1>Card not found</h1>;
     }
 
-    return viewCard(creditCard);
+    return (
+        <CardComponent myCard={creditCard} editable={false}/>);
 }

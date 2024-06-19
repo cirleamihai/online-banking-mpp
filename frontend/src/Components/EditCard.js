@@ -4,30 +4,20 @@ import {useEffect, useState} from "react";
 import CreditCard from "../Model/card";
 import {repo} from "../LocalStorage/repository";
 import {authFetch} from "../Utils/autoFetch";
+import {CardComponent} from "./CardComponent";
 
 const API_GET_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/credit-cards`;
 
 export default function EditCard() {
-
     const history = useNavigate();
     const {cardId} = useParams();
-
     const [creditCard, setCreditCard] = useState(new CreditCard());
-    // Initialize state variables for each input field
-    const [cardNumber, setCardNumber] = useState(creditCard ? creditCard.number : "");
-    const [cardHolder, setCardHolder] = useState(creditCard ? creditCard.placeHolder : "");
-    const [expiry, setExpiry] = useState(creditCard ? creditCard.stringifyExpirationDate() : "");
-    const [cvv, setCvv] = useState(creditCard ? creditCard.cvv : "");
-    const [cardType, setCardType] = useState(creditCard ? creditCard.type : "");
 
     if (!creditCard.isTruthy()) {
-        const localCreditCard = new CreditCard(repo.getCardById(cardId));
-        setCardNumber(localCreditCard.number);
-        setCardHolder(localCreditCard.placeHolder);
-        setCardType(localCreditCard.type);
-        setExpiry(localCreditCard.stringifyExpirationDate());
-        setCvv(localCreditCard.cvv);
-        setCreditCard(localCreditCard)
+        const card = repo.getCardById(cardId);
+        if (card) {
+            setCreditCard(card);
+        }
     }
 
     useEffect(() => {
@@ -35,36 +25,34 @@ export default function EditCard() {
             .then(response => response.json())
             .then(data => {
                 const localCreditCard = new CreditCard(data.card);
-                setCardNumber(localCreditCard.number);
-                setCardHolder(localCreditCard.placeHolder);
-                setExpiry(localCreditCard.stringifyExpirationDate());
-                setCvv(localCreditCard.cvv);
-                setCardType(localCreditCard.type);
-                setCreditCard(localCreditCard)
+                setCreditCard(localCreditCard);
             }).catch((error) => {
                 // console.error('Error:', error);
             });
     }, []);
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e, card, errors) => {
         e.preventDefault();
 
-        creditCard.number = cardNumber;
-        creditCard.placeHolder = cardHolder;
-        creditCard.cvv = cvv;
-        creditCard.type = cardType;
-        creditCard.setExpirationDate(expiry);
+        for (const key in errors) {
+            if (errors[key]) {
+                alert(errors[key]);
+                return;
+            }
+        }
 
-        console.log(JSON.stringify({card: creditCard}));
+        // Create a new credit card object
+        const localCreditCard = new CreditCard(card);
+        localCreditCard.id = cardId;
 
-        function operation(API_GET_URL, cardId, creditCard) {
+        function operation(API_GET_URL, cardId, localCreditCard) {
             authFetch(API_GET_URL + `/${cardId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({card: creditCard}),
+                body: JSON.stringify({card: localCreditCard}),
             })
                 .then(response => response.json())
                 .then(data => console.log(data))
@@ -72,8 +60,8 @@ export default function EditCard() {
                     console.error('Error:', error);
                 });
         }
-        const fctArgs = [API_GET_URL, cardId, creditCard];
-        repo.updateCard(creditCard);
+        const fctArgs = [API_GET_URL, cardId, localCreditCard];
+        repo.updateCard(localCreditCard);
 
         if (repo.isServerOnline()) {
             operation(...fctArgs);
@@ -84,10 +72,12 @@ export default function EditCard() {
         history('/cards');
     }
 
-    if (!creditCard) {
+    if (!creditCard.isTruthy()) {
         return <h1>Card not found</h1>;
     }
 
 
-    return NewCardForm(creditCard, handleSubmit, setCardNumber, setCardHolder, setExpiry, setCvv, setCardType);
+    return (
+        <CardComponent onSaveClick={handleSubmit} myCard={creditCard} editable={true}/>
+    )
 }

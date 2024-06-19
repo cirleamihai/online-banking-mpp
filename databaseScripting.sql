@@ -17,7 +17,7 @@ create table users (
 create table creditCards (
 	id varchar(255) primary key,
 	title varchar(255),
-	cardType varchar(255) check (cardType in ('Visa', 'MasterCard')),
+	cardType varchar(255),
 	placeHolder varchar(255),
 	cardNumber varchar(23) unique,
 	expiryMo int,
