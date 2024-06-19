@@ -15,6 +15,7 @@ import ControlPanel from "./Components/ControlPanel";
 import AddUser from "./Components/User/AddUser";
 import EditUser from "./Components/User/EditUser";
 import AuthenticationForm from "./Components/Authentication/AuthForm";
+import AccountMenu from "./Components/AccountMenu";
 
 
 
@@ -35,6 +36,8 @@ function MainContent() {
     const headerClass = location.pathname === '/login' ? 'Auth-header' : 'App-header';
 
     return (
+        <>
+        <AccountMenu />
         <div className={headerClass}>
                     <Routes>
                         <Route path="/login" element={<PrivateRoute element={<AuthenticationForm />} route={"/"} loginStatus={true}/>}/>
@@ -53,6 +56,7 @@ function MainContent() {
                         <Route path="*" element={<h1>Page not found</h1>} />
                     </Routes>
         </div>
+    </>
     );
 }
 
