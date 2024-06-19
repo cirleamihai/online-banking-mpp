@@ -23,6 +23,7 @@ export default class CreditCard {
         this.expiryMo = card.expiryMo || 0;
         this.expiryYr = card.expiryYr || 0;
         this.cvv = card.cvv || '';
+        this.usageNumber = card.usageNumber || 0;
 
         if (card.expiryDate) {
             this.setExpirationDate(card.expiryDate);
